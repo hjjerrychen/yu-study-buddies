@@ -40,7 +40,7 @@ mongoose
     })
     .then(() => console.log('DB Connected!'))
     .catch(err => {
-        console.log(`MongoDB connection error:+ ${err.message}`);
+        console.error(`MongoDB connection error:+ ${err.message}`);
     });
 
 // middleware
@@ -72,8 +72,10 @@ app.get("/", (req, res) => res.send("Server is working."))
  *   - l(imit) (optional): limit the number of courses to return if over this limit 
  * 
  * RESPONSE
- *   - name: course name
- *   - code: course code
+ *   - Array of courses: [{
+ *       name: course name
+ *       code: course code
+ *     }]
  */
 app.get("/courses", async (req, res) => {
     // return courses with course code that matches parameter q(uery) if provided
@@ -88,25 +90,25 @@ app.get("/courses", async (req, res) => {
 })
 
 /**
- * GET  /courses/:id 
+ * GET  /courses/:code 
  * 
  * Returns details for one course.
  * 
  * PARAMETERS
- *   - code: course code in XXXX #### format
+ *   - code: course code in XXXX#### format
  * 
  * RESPONSE
- *   - name: course name
- *   - subject: course subject code
- *   - number: course number
- *   - sections: [
- *       name: name of the section
- *       links: [
- *         type: type of link
- *         url: url of link
- *         updatedAt: date and time link was last updated
- *       ]
- *     ]
+ *   - Array of course details: [{
+ *       subject: course subject code
+ *       number: course number
+ *       sections: Array of sections: [
+ *         name: name of the section
+ *         links: [
+ *           type: type of link
+ *           url: url of link
+ *           updatedAt: date and time link was last updated
+ *         ]]
+ *     }]
  */
 app.get("/courses/:code", async (req, res) => {
     let code = req.params.code.trim().toUpperCase();
@@ -136,7 +138,12 @@ app.get("/courses/:code", async (req, res) => {
  *   - number: course number
  * 
  * RESPONSE
- *   - none?? ackownegement http code and or link???
+ *   - Error or request body if successful
+ *   - HTTP Status Codes: 
+ *     - 201: Section created.
+ *     - 400: Bad request. Check parameters and documentation.
+ *     - 409: Course already exists. 
+ *     - 500: Internal server error.
  */
 app.post("/courses/", async (req, res) => {
     if (!(req.body.name && req.body.subject && req.body.number)) {
@@ -161,12 +168,18 @@ app.post("/courses/", async (req, res) => {
  * Creates a new section for a given course.
  * 
  * PARAMETERS
- *   - code: course code in XXXX#### format
+ *   - :code: course code in XXXX#### format
  *   - name: section name
  *   - number: course number
  * 
  * RESPONSE
- *   - none?? ackownegement http code and or link???
+ *   - Error or request body if successful
+ *   - HTTP Status Codes: 
+ *     - 201: Section created.
+ *     - 400: Bad request. Check parameters and documentation.
+ *     - 409: Section already exists. 
+ *     - 404: Course not found.
+ *     - 500: Internal server error.
  */
 app.post("/courses/:code/sections", async (req, res) => {
     const code = req.params.code.trim().toUpperCase();
@@ -197,13 +210,19 @@ app.post("/courses/:code/sections", async (req, res) => {
  * Creates a new link for a given course and section.
  * 
  * PARAMETERS
- *   - code: course code in XXXX#### format
- *   - section: section name (case sensitive)
+ *   - :code: course code in XXXX#### format
+ *   - :section: section name (case sensitive)
  *   - link: link type
  *   - url: link url
  * 
  * RESPONSE
- *   - none?? ackownegement http code and or link???
+ *   - Error or request body if successful
+ *   - HTTP Status Codes: 
+ *     - 201: Link created.
+ *     - 400: Bad request. Check parameters and documentation.
+ *     - 409: Link already exists. 
+ *     - 404: Course or section not found.
+ *     - 500: Internal server error.
  */
 app.post("/courses/:code/sections/:section/link", async (req, res) => {
     const code = req.params.code.trim().toUpperCase();
@@ -214,7 +233,6 @@ app.post("/courses/:code/sections/:section/link", async (req, res) => {
     try {
         const link = new Link(req.body)
         let course = await Course.findOne({ code: code, "sections.name": section, "sections.links.url": req.body.url }).exec();
-        console.log(course)
         if (course) {
             return res.status(CONFLICT).json({ error: "Link already exists." })
         }
