@@ -15,7 +15,7 @@ let link = new mongoose.Schema({
         validate: {
             validator: (v) => /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/.test(v),
             message: props => "The URL is not valid!"
-        },
+        }
     },
 }, { timestamps: true })
 
@@ -25,7 +25,7 @@ let section = new mongoose.Schema({
         required: true,
         minlength: 1,
         maxlength: 20,
-        trim: true
+        trim: true,
     },
     links: [link],
 }, { timestamps: true })
@@ -58,7 +58,12 @@ let course = new mongoose.Schema({
         unique: true,
         index: true
     },
-    sections: [section],
+    sections: {
+        type: [section],
+        default: [{
+            name: "All"
+        }]
+    },
 }, { timestamps: true })
 
 course.pre('save', function (next) {
