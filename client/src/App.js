@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
 import Home from "./components/home"
-import CoursesList from "./components/courses-list"
+// import CoursesList from "./components/courses-list"
 import Course from "./components/course"
 import CourseAdd from "./components/course-add"
 import SectionAdd from "./components/section-add"
@@ -15,7 +15,7 @@ function App() {
   return (
       <Router>
         <Route path="/" exact component={Home} />
-        <Route path="/courses" exact component={CoursesList} />
+        {/* <Route path="/courses" exact component={CoursesList} /> */}
         <Route path="/courses/:course" exact component={Course} />
         <Route path="/courses/:course/sections/add" exact component={SectionAdd} />
         <Route path="/courses/:course/links/add" exact component={LinkAdd} />
