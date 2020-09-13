@@ -10,7 +10,7 @@ const mongoose = require("mongoose");
 const { json } = require("body-parser");
 
 // constants
-const PORT = 3000;
+const PORT = 8080;
 
 //http response codes
 const CREATED = 201;
@@ -74,7 +74,8 @@ app.get("/", (req, res) => res.send("Server is working."))
  * RESPONSE
  *   - Array of courses: [{
  *       name: course name
- *       code: course code
+ *       subject: course subject code
+ *       number: course number code
  *     }]
  */
 app.get("/courses", async (req, res) => {
@@ -82,7 +83,7 @@ app.get("/courses", async (req, res) => {
     const property = {};
     if (req.query.q) property.$or = [{ 'name': { $regex: req.query.q, $options: 'i' } }, { 'code': { $regex: req.query.q.replace(" ", ""), $options: 'i' } }]
     try {
-        res.json(await Course.find(property, "-_id name code", { limit: parseInt(req.query.l) || 0 }).exec())
+        res.json(await Course.find(property, "-_id name subject number", { limit: parseInt(req.query.l) || 0 }).exec())
     }
     catch (err) {
         errorHandler(res, err);

@@ -1,0 +1,55 @@
+
+.text-black{
+  color:black;
+}
+
+.jumbotron {
+  background-color: #E31837!important;
+  color: white;
+  padding: 2rem 1rem;
+}
+
+#home{
+  padding-top: 15em;
+} 
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+  nav {
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+}
+
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+  nav {
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+  nav {
+    padding-left: 10%;
+    padding-right: 10%;
+  }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+  nav {
+    padding-left: 10%;
+    padding-right: 10%;
+  }
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+  nav {
+    padding-left: 20%;
+    padding-right: 20%;
+  }
+}
