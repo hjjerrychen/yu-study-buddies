@@ -33,7 +33,6 @@ let section = new mongoose.Schema({
 let course = new mongoose.Schema({
     name: {
         type: String,
-        unique: true,
         minlength: 1,
         maxlength: 100,
         trim: true
@@ -41,10 +40,25 @@ let course = new mongoose.Schema({
     subject: {
         type: String,
         required: true,
-        minlength: 1,
+        minlength: 2,
         maxlength: 4,
         trim: true,
         uppercase: true
+    },
+    faculty: {
+        type: String,
+        required: false,
+        minlength: 2,
+        maxlength: 2,
+        trim: true,
+        uppercase: true
+    },
+    credits: {
+        type: String,
+        required: false,
+        minlength: 4,
+        maxlength: 4,
+        trim: true
     },
     number: {
         type: String,
@@ -67,16 +81,8 @@ let course = new mongoose.Schema({
 }, { timestamps: true })
 
 course.pre('save', function (next) {
-    this.code = `${this.subject}${this.number}`
+    this.code = `${this.faculty || ""}${this.subject}${this.number}`
     next();
-});
-
-course.post('save', function (error, doc, next) {
-    if (error.name === 'MongoError' && error.code === 11000) {
-        next(new Error('This course already exists!'));
-    } else {
-        next(error);
-    }
 });
 
 module.exports = {

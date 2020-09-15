@@ -21,9 +21,23 @@
   border-radius: 0;
 }
 
-.vert{
-  vertical-align: middle;
 
+footer{
+  background-color: #E31837!important;
+}
+
+.nav-offset{
+  margin-top: 57px;
+}
+
+.wrapper {
+  min-height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+#root{
+  height: 100vh;
 }
 
 

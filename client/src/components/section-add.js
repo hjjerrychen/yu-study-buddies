@@ -24,7 +24,7 @@ function SectionAdd() {
     }
 
     return (
-        <div>
+        <div className="nav-offset">
             <div className="jumbotron jumbotron-fluid">
                 <div className="container">
                     <div className="d-flex justify-content-between">

@@ -23,6 +23,7 @@ const SERVER_ERROR = 500;
 const Course = require("./db/models/course")["course"]
 const Section = require("./db/models/course")["section"]
 const Link = require("./db/models/course")["link"]
+const Flag = require("./db/models/flag")["flag"]
 
 // error handler
 const errorHandler = (res, err) => {
@@ -83,7 +84,7 @@ app.get("/courses", async (req, res) => {
     const property = {};
     if (req.query.q) property.$or = [{ 'name': { $regex: req.query.q, $options: 'i' } }, { 'code': { $regex: req.query.q.replace(" ", ""), $options: 'i' } }]
     try {
-        res.json(await Course.find(property, "-_id name subject number", { limit: parseInt(req.query.l) || 0 }).exec())
+        res.json(await Course.find(property, "-_id name faculty subject number", { limit: parseInt(req.query.l) || 0 }).exec())
     }
     catch (err) {
         errorHandler(res, err);
@@ -117,7 +118,7 @@ app.get("/courses/:code", async (req, res) => {
         return res.status(BAD_REQUEST).json({ error: "Bad request. Check parameters." })
     }
     try {
-        const course = await Course.findOne({ code: code }, "-_id name subject number sections.name sections.links.type sections.links.url sections.links.updatedAt").exec();
+        const course = await Course.findOne({ code: code }, "-_id name subject faculty credits number sections.name sections.links._id sections.links.type sections.links.url sections.links.updatedAt").exec();
         if (!course) {
             return res.status(NOT_FOUND).json({ error: "Course not found." })
         }
@@ -184,16 +185,15 @@ app.post("/courses/", async (req, res) => {
  */
 app.post("/courses/:code/sections", async (req, res) => {
     const code = req.params.code.trim().toUpperCase();
-    const section = new Section(req.body)
-    if (!(code && section && req.body.name)) {
+    if (!(code && req.body.name)) {
         return res.status(BAD_REQUEST).json({ error: "Bad request. Check parameters." })
     }
     try {
+        const section = new Section(req.body)
         let course = await Course.findOne({ code: code, "sections.name": req.body.name }).exec();
         if (course) {
             return res.status(CONFLICT).json({ error: "Section already exists." })
         }
-
         course = await Course.findOneAndUpdate({ code: code }, { $push: { sections: section } }).exec();
         if (!course) {
             return res.status(NOT_FOUND).json({ error: "Course not found." })
@@ -232,16 +232,45 @@ app.post("/courses/:code/sections/:section/link", async (req, res) => {
         return res.status(BAD_REQUEST).json({ error: "Bad request. Check parameters." })
     }
     try {
-        const link = new Link(req.body)
+        const link = new Link({ ...req.body, createdAt: new Date(), updatedAt: new Date() })
         let course = await Course.findOne({ code: code, "sections.name": section, "sections.links.url": req.body.url }).exec();
         if (course) {
             return res.status(CONFLICT).json({ error: "Link already exists." })
         }
-
-        course = await Course.findOneAndUpdate({ code: code, "sections.name": section }, { $push: { "sections.$.links": link } });
+        course = await Course.findOneAndUpdate({ code: code, "sections.name": section }, { $push: { "sections.$.links": link } }).exec();
         if (!course) {
             return res.status(NOT_FOUND).json({ error: "Course or section not found." })
         }
+        res.status(CREATED).json(req.body);
+    }
+    catch (err) {
+        errorHandler(res, err);
+    }
+});
+
+/**
+ * POST  /flag
+ * 
+ * Flags a link.
+ * 
+ * PARAMETERS
+ *   - id: the ObjectId of the link flagged
+ * 
+ * RESPONSE
+ *   - Error or request body if successful
+ *   - HTTP Status Codes: 
+ *     - 201: Link created.
+ *     - 400: Bad request. Check parameters and documentation.
+ *     - 409: Link already exists. 
+ *     - 404: Course or section not found.
+ *     - 500: Internal server error.
+ */
+app.post("/flag", async (req, res) => {
+    if (!req.body.link_id) {
+        return res.status(BAD_REQUEST).json({ error: "Bad request. Check parameters." })
+    }
+    try {
+        await Flag.create({ ...req.body, ip: req.connection.remoteAddress })
         res.status(CREATED).json(req.body);
     }
     catch (err) {

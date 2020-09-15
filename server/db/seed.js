@@ -33,19 +33,20 @@ db.once('open', async () => {
     section = new Section({ name: "A", links: [link1, link2, link3, link4] });
     section2 = new Section({ name: "B", links: [link1, link2, link3, link4] });
 
-    Course.create({ name: "Introduction to Net-centric Computing", subject: "EECS", number: "1012", sections: [section, section2] }, (err, small) => {
+
+    Course.create({ name: "Introduction to Net-centric Computing", subject: "EECS", number: "1012", faculty: "LE", credits: "3.00", sections: [section, section2] }, (err, small) => {
         if (err) console.error(err);
     });
-    Course.create({ name: "Programming for Mobile Computing", subject: "EECS", number: "1022", sections: section }, (err, small) => {
+    Course.create({ name: "Programming for Mobile Computing", subject: "EECS", number: "1022", faculty: "LE", credits: "3.00", sections: section }, (err, small) => {
         if (err) console.error(err);
     });
-    Course.create({ name: "Introduction to the Theory of Computation", subject: "EECS", number: "2001", sections: section }, (err, small) => {
+    Course.create({ name: "Introduction to the Theory of Computation", subject: "EECS", number: "2001", faculty: "LE", credits: "3.00", sections: section }, (err, small) => {
         if (err) console.error(err);
     });
-    Course.create({ name: "Computer Organization", subject: "EECS", number: "2021" }, (err, small) => {
+    Course.create({ name: "Computer Organization", subject: "EECS", number: "2021", faculty: "LE", credits: "3.00", }, (err, small) => {
         if (err) console.error(err);
     });
-    await Course.create({ name: "Advanced Object Oriented Programming", subject: "EECS", number: "2030", sections: section }, (err, small) => {
+    await Course.create({ name: "Advanced Object Oriented Programming", subject: "EECS", number: "2030", faculty: "LE", credits: "3.00", sections: section }, (err, small) => {
         if (err) console.error(err);
     });
 
