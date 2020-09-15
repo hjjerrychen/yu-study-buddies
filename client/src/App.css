@@ -9,9 +9,23 @@
   padding: 2rem 1rem;
 }
 
-#home{
-  padding-top: 15em;
+.top-spacing{
+  padding-top: 13em;
 } 
+
+.min-content {
+  height: min-content;
+}
+
+.btn {
+  border-radius: 0;
+}
+
+.vert{
+  vertical-align: middle;
+
+}
+
 
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {

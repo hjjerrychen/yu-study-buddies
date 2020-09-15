@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import React from 'react';
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
@@ -9,18 +9,28 @@ import Course from "./components/course"
 import CourseAdd from "./components/course-add"
 import SectionAdd from "./components/section-add"
 import LinkAdd from "./components/link-add"
+import Header from "./components/header"
+import NotFound from "./components/404"
 
 
 function App() {
   return (
-      <Router>
-        <Route path="/" exact component={Home} />
+    <Router>
+      <Switch>
+        <Route exact path="/"> <Header white /></Route>
+        <Route component={Header} />
+      </Switch>
+
+      <Switch>
+        <Route exact path="/" component={Home} />
         {/* <Route path="/courses" exact component={CoursesList} /> */}
-        <Route path="/courses/:course" exact component={Course} />
-        <Route path="/courses/:course/sections/add" exact component={SectionAdd} />
-        <Route path="/courses/:course/links/add" exact component={LinkAdd} />
-        <Route path="/courses/add" exact component={CourseAdd} />
-      </Router>
+        <Route exact path="/courses/add" component={CourseAdd} />
+        <Route exact path="/courses/:course" component={Course} />
+        <Route exact path="/courses/:course/sections/add" component={SectionAdd} />
+        <Route exact path="/courses/:course/sections/:section/links/add" component={LinkAdd} />
+        <Route component={NotFound} />
+      </Switch>
+    </Router>
   );
 }
 
