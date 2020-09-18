@@ -5,9 +5,12 @@ function Footer() {
     return (
         <footer className="footer mt-5">
             <nav className="navbar navbar-dark">
-                <nav class="nav">
-                    <a class="nav-link text-white" href="/">Home</a>
-                </nav>
+                <div className="container">
+                    <nav className="nav">
+                        <a className="nav-link text-white" href="/">Home</a>
+                    </nav>
+                </div>
+
             </nav>
         </footer>
     )

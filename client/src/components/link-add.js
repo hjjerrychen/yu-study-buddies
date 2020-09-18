@@ -42,6 +42,7 @@ function LinkAdd() {
                         <div className="form-group">
                             <label for="courseName">Type</label>
                             <select class="form-control rounded-0" value={type} onChange={(e) => setType(e.target.value)} >
+                                <option value="none">Select a type...</option>
                                 <option value="Facebook Messenger">Facebook Messenger</option>
                                 <option value="WhatsApp">WhatsApp</option>
                                 <option value="Discord">Discord</option>

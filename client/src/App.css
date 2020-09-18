@@ -3,6 +3,15 @@
   color:black;
 }
 
+.link-black, .link-black:hover {
+  color:black;
+  cursor: pointer;
+}
+
+.link-black:hover {
+  text-decoration: underline;
+}
+
 .jumbotron {
   background-color: #E31837!important;
   color: white;
@@ -17,7 +26,7 @@
   height: min-content;
 }
 
-.btn {
+.btn, .modal-content {
   border-radius: 0;
 }
 

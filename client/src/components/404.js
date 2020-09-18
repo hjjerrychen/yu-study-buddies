@@ -1,9 +1,7 @@
 import React from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useParams } from 'react-router-dom';
 
-function LinkAdd(props) {
-    let { course, section } = useParams();
+function LinkAdd() {
 
     return (
         <div className="top-spacing">
