@@ -72,7 +72,7 @@ function Course() {
                                         <h5 className="card-title">{link.type}</h5>
                                         <p className="card-text bg-light"><small><samp><a href={link.url}>{link.url}</a></samp></small></p>
                                         <p className="card-text mb-0">
-                                            <small className="mr-2 link-black" onClick={() => copyToClipboard(link._id, link.url)}>{copyButtonLabels[link._id]}</small>
+                                            <small className="mr-3 link-black" onClick={() => copyToClipboard(link._id, link.url)}>{copyButtonLabels[link._id]}</small>
                                             <small className="link-black"
                                                 onClick={() => setLinkToReport({ id: link._id, type: link.type, url: link.url, date: new Date(link.updatedAt).toDateString() })}>
                                                 <i className="fas fa-exclamation-circle" /> Report
@@ -108,25 +108,27 @@ function Course() {
                 <div className="container">
                     <div className="d-flex justify-content-between">
                         <div>
-                            <h1>{courseDetails.faculty || ""}/{courseDetails.subject} {courseDetails.number}</h1>
+                            <h1>{courseDetails.faculty || ""}{courseDetails.faculty && "/"}{courseDetails.subject} {courseDetails.number}</h1>
                             <p className="lead mb-0">{courseDetails.name}</p>
                         </div>
-                        <div className="">
+                        <div className="d-flex align-items-center">
                             <div className="d-flex flex-column">
-                                <a className="btn btn-outline-light min-content" href={`${course}/sections/add`} role="button">Add Section</a>
-                            </div>
-                            {
-                                courseDetails.faculty && courseDetails.credits &&
-                                <div className="d-flex flex-column mt-3">
-                                    <a className="btn btn-outline-light min-content"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        href={`https://w2prod.sis.yorku.ca/Apps/WebObjects/cdm.woa/wa/crsq?fa=${courseDetails.faculty}&sj=${courseDetails.subject}&cn=${courseDetails.number}&cr=${courseDetails.credits}&ay=2020&ss=FW`}
-                                        role="button">
-                                        View Course on REM <i className="fas fa-external-link-alt"></i>
-                                    </a>
+                                <div className="d-flex flex-column">
+                                    <a className="btn btn-outline-light min-content" href={`${course}/sections/add`} role="button">Add Section</a>
                                 </div>
-                            }
+                                {
+                                    courseDetails.faculty && courseDetails.credits &&
+                                    <div className="d-flex flex-column mt-3">
+                                        <a className="btn btn-outline-light min-content"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            href={`https://w2prod.sis.yorku.ca/Apps/WebObjects/cdm.woa/wa/crsq?fa=${courseDetails.faculty}&sj=${courseDetails.subject}&cn=${courseDetails.number}&cr=${courseDetails.credits}&ay=2020&ss=FW`}
+                                            role="button">
+                                            View Course on REM <i className="fas fa-external-link-alt"></i>
+                                        </a>
+                                    </div>
+                                }
+                            </div>
                         </div>
                     </div>
 

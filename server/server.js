@@ -23,7 +23,7 @@ const SERVER_ERROR = 500;
 const Course = require("./db/models/course")["course"]
 const Section = require("./db/models/course")["section"]
 const Link = require("./db/models/course")["link"]
-const Flag = require("./db/models/flag")["flag"]
+const Report = require("./db/models/report")["report"]
 
 // error handler
 const errorHandler = (res, err) => {
@@ -228,7 +228,7 @@ app.post("/courses/:code/sections", async (req, res) => {
 app.post("/courses/:code/sections/:section/link", async (req, res) => {
     const code = req.params.code.trim().toUpperCase();
     const section = req.params.section;
-    if (!(code && section && req.body.type && req.body.url)) {
+    if (!(code && section && req.body.type && req.body.url && req.body.terms)) {
         return res.status(BAD_REQUEST).json({ error: "Bad request. Check parameters." })
     }
     try {
@@ -249,12 +249,12 @@ app.post("/courses/:code/sections/:section/link", async (req, res) => {
 });
 
 /**
- * POST  /flag
+ * POST  /report
  * 
- * Flags a link.
+ * Reports a link.
  * 
  * PARAMETERS
- *   - id: the ObjectId of the link flagged
+ *   - id: the ObjectId of the link reportged
  * 
  * RESPONSE
  *   - Error or request body if successful
@@ -265,12 +265,13 @@ app.post("/courses/:code/sections/:section/link", async (req, res) => {
  *     - 404: Course or section not found.
  *     - 500: Internal server error.
  */
-app.post("/flag", async (req, res) => {
-    if (!req.body.link_id) {
+app.post("/report", async (req, res) => {
+
+    if (!(req.body.link_id && req.body.reason)) {
         return res.status(BAD_REQUEST).json({ error: "Bad request. Check parameters." })
     }
     try {
-        await Flag.create({ ...req.body, ip: req.connection.remoteAddress })
+        await Report.create({ ...req.body, ip: req.connection.remoteAddress })
         res.status(CREATED).json(req.body);
     }
     catch (err) {

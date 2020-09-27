@@ -8,7 +8,7 @@ function Home() {
     const [searchText, setSearchText] = useState("");
     const [searchResults, setSearchResults] = useState("");
 
-    useEffect(() => document.body.style.backgroundColor = "#E31837", []);
+    useEffect(() => { document.body.style.backgroundColor = "#E31837" }, []);
 
     let searchResultElements = [];
 
@@ -16,7 +16,7 @@ function Home() {
         <a className="list-group-item list-group-item-action"
             href={`courses/${result.faculty || ""}${result.subject + result.number}`}
             key={result.subject + result.number}>
-            <span class="font-weight-bold">{result.faculty || ""}/{result.subject} {result.number}</span> - {result.name}
+            <span className="font-weight-bold">{result.faculty || ""}{result.faculty && "/"}{result.subject} {result.number}</span> - {result.name}
         </a>
     );
 
@@ -24,12 +24,12 @@ function Home() {
         <a className="list-group-item list-group-item-action"
             href="courses/add"
             key="add">
-            <span class="font-weight-bold">Don't see your course?</span> Add it!
+            <span className="font-weight-bold">Don't see your course?</span> Add it!
         </a>
     );
 
     return (
-        <div class="container top-spacing nav-offset" >
+        <div className="container top-spacing nav-offset" >
             <h1 id="welcome-text" className="text-white">Find group chats. Connect with classmates. Ace your courses.</h1>
             <input type="text" className="form-control form-control-lg rounded-0" placeholder="Search for courses by code or name" value={searchText} onChange={async (e) => {
                 setSearchText(e.target.value)

@@ -39,8 +39,8 @@ function CourseAdd() {
 
             { !submitted &&
                 <div className="container">
-                    <form >
-                        <label for="courseCode">Course Code</label>
+                    <form>
+                        <label>Course Code</label>
                         <div className="form-row">
                             <div className="form-group col-md-6">
                                 <small className="form-text text-muted">Subject Code</small>
@@ -67,7 +67,7 @@ function CourseAdd() {
                             </div>
                         </div>
                         <div className="form-group">
-                            <label for="courseName">Course Name</label>
+                            <label>Course Name</label>
                             <input
                                 type="text"
                                 className="form-control rounded-0"
