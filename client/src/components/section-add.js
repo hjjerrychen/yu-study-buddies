@@ -12,6 +12,8 @@ function SectionAdd() {
     const [name, setName] = useState("");
     const [submitted, setSubmitted] = useState(false);
     const nameValid = name.length > 0 && name.length <= 10;
+    const [serverError, setServerError] = useState("");
+
 
     const submit = async (e) => {
         e.preventDefault();
@@ -24,8 +26,16 @@ function SectionAdd() {
             await axios.post(`http://localhost:8080/courses/${course}/sections`, request)
             setSubmitted(true);
         }
-        catch {
-            // inject banner
+        catch (e) {
+            if (e.response?.status === 400) {
+                setServerError("Bad request.")
+            }
+            else if (e.response?.data?.error) {
+                setServerError(e.response.data.error)
+            }
+            else {
+                setServerError("Things aren't working right now. Please try again later.")
+            }
         }
     }
 
@@ -43,6 +53,12 @@ function SectionAdd() {
             {
                 !submitted &&
                 <div className="container">
+                    {
+                        serverError &&
+                        <div className="alert alert-danger" role="alert">
+                            Error: {serverError}
+                        </div>
+                    }
                     <form>
                         <div className="form-group">
                             <label>Section Name</label>
@@ -60,7 +76,7 @@ function SectionAdd() {
                             <div className="invalid-feedback">Section name is too long.</div>
                         </div>
 
-                        <ReCAPTCHA sitekey="6LdgVNYZAAAAAPBMSaqI_px7PyL1As_XkTmLAXVa" size="invisible" ref={reRef}/>
+                        <ReCAPTCHA sitekey="6LdgVNYZAAAAAPBMSaqI_px7PyL1As_XkTmLAXVa" size="invisible" ref={reRef} />
                         <button type="submit" className="btn btn-danger" onClick={submit} disabled={!nameValid}>Create Section</button>
                     </form>
                 </div>

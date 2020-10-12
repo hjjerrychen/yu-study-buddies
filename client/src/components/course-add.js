@@ -11,6 +11,7 @@ function CourseAdd() {
     const [number, setNumber] = useState("");
     const [name, setName] = useState("");
     const [submitted, setSubmitted] = useState(false);
+    const [serverError, setServerError] = useState("");
 
     const formValid = {
         "subject": subject.length >= 2 && subject.length <= 4,
@@ -20,6 +21,7 @@ function CourseAdd() {
 
     const submit = async (e) => {
         e.preventDefault();
+
         try {
             const request = {
                 "name": name,
@@ -31,8 +33,16 @@ function CourseAdd() {
             await axios.post("http://localhost:8080/courses/", request)
             setSubmitted(true);
         }
-        catch {
-            // inject banner
+        catch (e) {
+            if (e.response?.status === 400) {
+                setServerError("Bad request.")
+            }
+            else if (e.response?.data?.error) {
+                setServerError(e.response.data.error)
+            }
+            else {
+                setServerError("Things aren't working right now. Please try again later.")
+            }
         }
     }
 
@@ -50,6 +60,12 @@ function CourseAdd() {
 
             { !submitted &&
                 <div className="container">
+                    {
+                        serverError &&
+                        <div className="alert alert-danger" role="alert">
+                            Error: {serverError}
+                        </div>
+                    }
                     <form>
                         <label>Course Code</label>
                         <div className="form-row">

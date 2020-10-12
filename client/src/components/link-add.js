@@ -15,12 +15,13 @@ function LinkAdd() {
     const [terms, setTerms] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [validateTerms, setValidateTerms] = useState(false);
+    const [serverError, setServerError] = useState("");
 
     const formValid = {
         "type": type !== "Select a type..." && type !== "",
         "customType": (type !== "Other" && customType === "") || (customType.length > 0 && customType.length < 20 && type === "Other"),
         "url": /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/.test(url),
-        "terms": terms
+        "terms": terms,
     }
 
     const submit = async (e) => {
@@ -36,8 +37,16 @@ function LinkAdd() {
             await axios.post(`http://localhost:8080/courses/${course}/sections/${section}/link`, request)
             setSubmitted(true);
         }
-        catch {
-            // inject banner
+        catch (e) {
+            if (e.response?.status === 400) {
+                setServerError("Bad request.")
+            }
+            else if (e.response?.data?.error) {
+                setServerError(e.response.data.error)
+            }
+            else {
+                setServerError("Things aren't working right now. Please try again later.")
+            }
         }
     }
     return (
@@ -53,6 +62,12 @@ function LinkAdd() {
             </div>
             { !submitted &&
                 <div className="container">
+                    {
+                        serverError &&
+                        <div className="alert alert-danger" role="alert">
+                            Error: {serverError}
+                        </div>
+                    }
                     <form>
                         <div className="form-group">
                             <label>Type</label>
