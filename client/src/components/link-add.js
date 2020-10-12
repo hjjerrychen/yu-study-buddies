@@ -41,6 +41,9 @@ function LinkAdd() {
             if (e.response?.status === 400) {
                 setServerError("Bad request.")
             }
+            else if(e.response?.status === 404){
+                setServerError(`${e.response.data.error} Please check the URL of the page you are on and try again.`)
+            }
             else if (e.response?.data?.error) {
                 setServerError(e.response.data.error)
             }
