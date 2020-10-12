@@ -14,6 +14,7 @@ function LinkAdd() {
     const [url, setURL] = useState("");
     const [terms, setTerms] = useState(false);
     const [submitted, setSubmitted] = useState(false);
+    const [validateTerms, setValidateTerms] = useState(false);
 
     const formValid = {
         "type": type !== "Select a type..." && type !== "",
@@ -112,15 +113,18 @@ function LinkAdd() {
                             <div className="form-check">
                                 <input className={classNames({
                                     "form-check-input": true,
-                                    "is-valid": formValid.terms
+                                    "is-valid": formValid.terms,
+                                    "is-invalid": validateTerms && !formValid.terms
                                 })}
                                     type="checkbox"
                                     checked={terms}
                                     onChange={() => {
+                                        setValidateTerms(true)
                                         setTerms(!terms)
                                     }} />
                                 <label className="form-check-label">I agree that the URL above links to an online community of the indicated type for this course and section, and is for school purposes only.</label>
                                 <label className="form-check-label"><small>Links to malicious, inappropriate, copyrighted or otherwise illegal content including Zoom and any online lecture links are not allowed.</small></label>
+                                <div className="invalid-feedback">Please agree to the terms to continue.</div>
                             </div>
                         </div>
 
