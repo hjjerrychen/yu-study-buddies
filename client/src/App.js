@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import ReactGA from 'react-ga';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
@@ -12,6 +13,10 @@ import LinkAdd from "./components/link-add"
 import Header from "./components/header"
 import NotFound from "./components/404"
 
+const analyticsTrackingID = "UA-115566042-3"
+
+ReactGA.initialize(analyticsTrackingID);
+ReactGA.pageview(window.location.pathname + window.location.search)
 
 function App() {
   return (
