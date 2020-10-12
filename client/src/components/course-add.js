@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from 'axios';
 import classNames from 'classnames';
+import ReCAPTCHA from "react-google-recaptcha";
 
 function CourseAdd() {
+    const reRef = useRef();
+
     const [subject, setSubject] = useState("");
     const [number, setNumber] = useState("");
     const [name, setName] = useState("");
@@ -15,21 +18,22 @@ function CourseAdd() {
         "name": name.length > 0 && name.length <= 100
     }
 
-    const submit = (e) => {
+    const submit = async (e) => {
         e.preventDefault();
-        const request = {
-            "name": name,
-            "subject": subject,
-            "number": number
+        try {
+            const request = {
+                "name": name,
+                "subject": subject,
+                "number": number,
+                "captcha": await reRef.current.executeAsync()
+            }
+            reRef.current.reset();
+            await axios.post("http://localhost:8080/courses/", request)
+            setSubmitted(true);
         }
-        axios.post("http://localhost:8080/courses/", request)
-            .then(response => {
-                setSubmitted(true);
-            })
-            .catch((error) => {
-                console.log(error);
-            })
-
+        catch {
+            // inject banner
+        }
     }
 
     return (
@@ -100,6 +104,8 @@ function CourseAdd() {
                             />
                             <div className="invalid-feedback">Please enter a shorter course name.</div>
                         </div>
+
+                        <ReCAPTCHA sitekey="6LdgVNYZAAAAAPBMSaqI_px7PyL1As_XkTmLAXVa" size="invisible" ref={reRef} />
                         <button type="submit" className="btn btn-danger" onClick={submit} disabled={!Object.values(formValid).every(formFieldValid => formFieldValid)}>Create Course</button>
                     </form>
                 </div>
@@ -109,7 +115,7 @@ function CourseAdd() {
                 submitted &&
                 <div className="container">
                     <h1>The course has been created!</h1>
-                    <a class={"btn btn-danger mt-5"} href={`/courses/${subject}${number}`} role="button">{`Go to ${subject}${number}`}</a>
+                    <a className={"btn btn-danger mt-5"} href={`/courses/${subject}${number}`} role="button">{`Go to ${subject}${number}`}</a>
                 </div>
             }
         </div>

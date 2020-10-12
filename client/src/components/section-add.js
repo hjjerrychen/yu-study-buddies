@@ -1,29 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import classNames from 'classnames';
+import ReCAPTCHA from "react-google-recaptcha";
 
 function SectionAdd() {
     let { course } = useParams();
+    const reRef = useRef();
+
     const [name, setName] = useState("");
     const [submitted, setSubmitted] = useState(false);
-
     const nameValid = name.length > 0 && name.length <= 10;
 
-    const submit = (e) => {
+    const submit = async (e) => {
         e.preventDefault();
-        const request = {
-            "name": name
+        try {
+            const request = {
+                "name": name,
+                "captcha": await reRef.current.executeAsync()
+            }
+            reRef.current.reset();
+            await axios.post(`http://localhost:8080/courses/${course}/sections`, request)
+            setSubmitted(true);
         }
-        axios.post(`http://localhost:8080/courses/${course}/sections`, request)
-            .then(response => {
-                setSubmitted(true);
-            })
-            .catch((error) => {
-                console.log(error);
-            })
-
+        catch {
+            // inject banner
+        }
     }
 
     return (
@@ -52,10 +55,12 @@ function SectionAdd() {
                                 })}
                                 id="name"
                                 value={name}
-                                maxlength="10"
+                                maxLength="10"
                                 onChange={(e) => setName(e.target.value)} placeholder="A" />
                             <div className="invalid-feedback">Section name is too long.</div>
                         </div>
+
+                        <ReCAPTCHA sitekey="6LdgVNYZAAAAAPBMSaqI_px7PyL1As_XkTmLAXVa" size="invisible" ref={reRef}/>
                         <button type="submit" className="btn btn-danger" onClick={submit} disabled={!nameValid}>Create Section</button>
                     </form>
                 </div>
@@ -64,7 +69,7 @@ function SectionAdd() {
                 submitted &&
                 <div className="container">
                     <h1>The section has been created!</h1>
-                    <a class={"btn btn-danger mt-5"} href={`/courses/${course}`} role="button">{`Go back to ${course}`}</a>
+                    <a className={"btn btn-danger mt-5"} href={`/courses/${course}`} role="button">{`Go back to ${course}`}</a>
                 </div>
             }
         </div>

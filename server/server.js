@@ -8,6 +8,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const { json } = require("body-parser");
+const fetch = require('node-fetch');
 
 // constants
 const PORT = 8080;
@@ -47,6 +48,15 @@ mongoose
 // middleware
 app.use(cors());
 app.use(bodyParser.json());
+
+// utility function
+const verifyReCaptcha = async (token) => {
+    return (await (await fetch(`https://www.google.com/recaptcha/api/siteverify?response=${token}&secret=${process.env.RECAPTCHA_SECRET}`,
+        {
+            method: "POST"
+        }
+    )).json()).success
+}
 
 // ROUTES
 
@@ -148,10 +158,10 @@ app.get("/courses/:code", async (req, res) => {
  *     - 500: Internal server error.
  */
 app.post("/courses/", async (req, res) => {
-    if (!(req.body.name && req.body.subject && req.body.number)) {
-        return res.status(BAD_REQUEST).json({ error: "Bad request. Check parameters." })
-    }
     try {
+        if (!(req.body.name && req.body.subject && req.body.number && req.body.captcha && await verifyReCaptcha(req.body.captcha))) {
+            return res.status(BAD_REQUEST).json({ error: "Bad request. Check parameters." })
+        }
         course = await Course.findOne({ code: `${req.body.subject}${req.body.number}` }).exec();
         if (course) {
             return res.status(CONFLICT).json({ error: "Course already exists." })
@@ -185,10 +195,10 @@ app.post("/courses/", async (req, res) => {
  */
 app.post("/courses/:code/sections", async (req, res) => {
     const code = req.params.code.trim().toUpperCase();
-    if (!(code && req.body.name)) {
-        return res.status(BAD_REQUEST).json({ error: "Bad request. Check parameters." })
-    }
     try {
+        if (!(code && req.body.name && req.body.captcha && await verifyReCaptcha(req.body.captcha))) {
+            return res.status(BAD_REQUEST).json({ error: "Bad request. Check parameters." })
+        }
         const section = new Section(req.body)
         let course = await Course.findOne({ code: code, "sections.name": req.body.name }).exec();
         if (course) {
@@ -228,10 +238,10 @@ app.post("/courses/:code/sections", async (req, res) => {
 app.post("/courses/:code/sections/:section/link", async (req, res) => {
     const code = req.params.code.trim().toUpperCase();
     const section = req.params.section;
-    if (!(code && section && req.body.type && req.body.url && req.body.terms)) {
-        return res.status(BAD_REQUEST).json({ error: "Bad request. Check parameters." })
-    }
     try {
+        if (!(code && section && req.body.type && req.body.url && req.body.terms && req.body.captcha && await verifyReCaptcha(req.body.captcha))) {
+            return res.status(BAD_REQUEST).json({ error: "Bad request. Check parameters." })
+        }
         const link = new Link({ ...req.body, createdAt: new Date(), updatedAt: new Date() })
         let course = await Course.findOne({ code: code, "sections.name": section, "sections.links.url": req.body.url }).exec();
         if (course) {
