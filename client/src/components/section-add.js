@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import classNames from 'classnames';
 
 function SectionAdd() {
     let { course } = useParams();
     const [name, setName] = useState("");
     const [submitted, setSubmitted] = useState(false);
+
+    const nameValid = name.length > 0 && name.length <= 10;
 
     const submit = (e) => {
         e.preventDefault();
@@ -34,16 +37,26 @@ function SectionAdd() {
                     </div>
                 </div>
             </div>
-
-            { !submitted &&
+            {
+                !submitted &&
                 <div className="container">
                     <form>
                         <div className="form-group">
                             <label>Section Name</label>
-                            <input type="text" className="form-control rounded-0" id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="A" />
-                            <div className="invalid-feedback">Please include the section name.</div>
+                            <input type="text"
+                                className={classNames({
+                                    "form-control": true,
+                                    "rounded-0": true,
+                                    "is-valid": nameValid,
+                                    "is-invalid": !nameValid && name
+                                })}
+                                id="name"
+                                value={name}
+                                maxlength="10"
+                                onChange={(e) => setName(e.target.value)} placeholder="A" />
+                            <div className="invalid-feedback">Section name is too long.</div>
                         </div>
-                        <button type="submit" className="btn btn-danger" onClick={submit} >Create Section</button>
+                        <button type="submit" className="btn btn-danger" onClick={submit} disabled={!nameValid}>Create Section</button>
                     </form>
                 </div>
             }

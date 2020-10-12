@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from 'axios';
+import classNames from 'classnames';
 
 function CourseAdd() {
     const [subject, setSubject] = useState("");
     const [number, setNumber] = useState("");
     const [name, setName] = useState("");
     const [submitted, setSubmitted] = useState(false);
+
+    const formValid = {
+        "subject": subject.length >= 2 && subject.length <= 4,
+        "number": number.length === 4 && Number(number.charAt(0)) > 0,
+        "name": name.length > 0 && name.length <= 100
+    }
 
     const submit = (e) => {
         e.preventDefault();
@@ -46,39 +53,54 @@ function CourseAdd() {
                                 <small className="form-text text-muted">Subject Code</small>
                                 <input
                                     type="text"
-                                    className="form-control rounded-0"
-                                    value={subject} onChange={(e) => setSubject(e.target.value)}
+                                    className={classNames({
+                                        "form-control": true,
+                                        "rounded-0": true,
+                                        "is-valid": formValid.subject,
+                                        "is-invalid": !formValid.subject && subject
+                                    })}
+                                    value={subject} onChange={(e) => setSubject(e.target.value.toUpperCase().replace(/[^A-Z]/g, ''))}
+                                    maxLength="4"
                                     placeholder="ECON"
-                                    required
                                 />
-                                <div className="invalid-feedback">Please include the valid course subject.</div>
+                                <div className="invalid-feedback">Please enter a valid subject code.</div>
                             </div>
                             <div className="form-group col-md-6">
                                 <small className="form-text text-muted">Course Number</small>
                                 <input
                                     type="text"
-                                    className="form-control rounded-0"
+                                    className={classNames({
+                                        "form-control": true,
+                                        "rounded-0": true,
+                                        "is-valid": formValid.number,
+                                        "is-invalid": !formValid.number && number
+                                    })}
                                     value={number}
-                                    onChange={(e) => setNumber(e.target.value)}
+                                    onChange={(e) => setNumber(e.target.value.replace(/[^0-9]/g, ''))}
                                     placeholder="1000"
-                                    required
+                                    maxLength="4"
                                 />
-                                <div className="invalid-feedback">Please include the valid course number.</div>
+                                <div className="invalid-feedback">Please enter a valid course number.</div>
                             </div>
                         </div>
                         <div className="form-group">
                             <label>Course Name</label>
                             <input
                                 type="text"
-                                className="form-control rounded-0"
+                                className={classNames({
+                                    "form-control": true,
+                                    "rounded-0": true,
+                                    "is-valid": formValid.name,
+                                    "is-invalid": !formValid.name && name
+                                })}
                                 value={name}
+                                maxLength="100"
                                 onChange={(e) => setName(e.target.value)}
                                 placeholder="Introduction to Microeconomics"
-                                required
                             />
-                            <div className="invalid-feedback">Please include the course name.</div>
+                            <div className="invalid-feedback">Please enter a shorter course name.</div>
                         </div>
-                        <button type="submit" className="btn btn-danger" onClick={submit} >Create Course</button>
+                        <button type="submit" className="btn btn-danger" onClick={submit} disabled={!Object.values(formValid).every(formFieldValid => formFieldValid)}>Create Course</button>
                     </form>
                 </div>
             }

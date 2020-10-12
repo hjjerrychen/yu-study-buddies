@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import classNames from 'classnames';
 
 function LinkAdd() {
     let { course, section } = useParams();
@@ -10,9 +11,13 @@ function LinkAdd() {
     const [url, setURL] = useState("");
     const [terms, setTerms] = useState(false);
     const [submitted, setSubmitted] = useState(false);
-    // const [validType, setValidType] = useState(false);
-    // const [validURL, setValidURL] = useState(false);
-    // const [submitted, setSubmitted] = useState(false);
+
+    const formValid = {
+        "type": type !== "Select a type..." && type !== "",
+        "customType": (type !== "Other" && customType === "")||(customType.length > 0 && customType.length < 20 && type === "Other"),
+        "url": /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/.test(url),
+        "terms": terms
+    }
 
     const submit = (e) => {
         e.preventDefault();
@@ -46,7 +51,12 @@ function LinkAdd() {
                     <form>
                         <div className="form-group">
                             <label>Type</label>
-                            <select className="form-control rounded-0" value={type} onChange={(e) => setType(e.target.value)} >
+                            <select className={classNames({
+                                    "form-control": true,
+                                    "rounded-0": true,
+                                    "is-valid": formValid.type,
+                                    "is-invalid": !formValid.type && type
+                                })} value={type} onChange={(e) => setType(e.target.value)} >
                                 <option value="none">Select a type...</option>
                                 <option value="WhatsApp">WhatsApp</option>
                                 <option value="Discord">Discord</option>
@@ -58,29 +68,60 @@ function LinkAdd() {
                                 <option value="Signal">Signal</option>
                                 <option value="Other">Other</option>
                             </select>
-                            {type === "Other" && <input type="text" className="form-control rounded-0 mt-3" value={customType} onChange={(e) => setCustomType(e.target.value)} placeholder="Type" />}
+                        {
+                            type === "Other" &&
+                            <input
+                                type="text"
+                                className={classNames({
+                                    "form-control": true,
+                                    "rounded-0": true,
+                                    "mt-3": true,
+                                    "is-valid": formValid.customType,
+                                    "is-invalid": !formValid.customType && customType
+                                })}
+                                value={customType} onChange={(e) => setCustomType(e.target.value)}
+                                placeholder="Type" />
+                        }
                             {/* <small className="form-text text-muted">For WeChat</small> */}
-                            <div className="invalid-feedback">Please include the type.</div>
+                            <div className="invalid-feedback">Please enter a valid type.</div>
                         </div>
 
                         <div className="form-group">
                             <label>URL</label>
-                            <input type="text" className="form-control rounded-0" id="url" value={url} onChange={(e) => {
+                        <input
+                            type="text"
+                            className={classNames({
+                                "form-control": true,
+                                "rounded-0": true,
+                                "is-valid": formValid.url,
+                                "is-invalid": !formValid.url && url
+                            })}
+                            id="url"
+                            value={url}
+                            onChange={(e) => {
                                 setURL(e.target.value)
-                            }} placeholder="https://www.google.com" />
-                            <div className="invalid-feedback">Please include the link URL.</div>
+                            }}
+                            placeholder="https://www.google.com" />
+                            <div className="invalid-feedback">Please enter a valid URL, including http or https.</div>
                         </div>
                         <div className="form-group">
                             <div className="form-check">
-                                <input className={"form-check-input"} type="checkbox" checked={terms} onChange={() => {
-                                    setTerms(!terms)
-                                }} />
+                                <input className={classNames({
+                                    "form-check-input": true,
+                                    "is-valid": formValid.terms,
+                                    "is-invalid": !formValid.terms 
+                                })}
+                                    type="checkbox" 
+                                    checked={terms}
+                                    onChange={() => {
+                                        setTerms(!terms)
+                                    }} />
                                 <label className="form-check-label">I agree that the URL above links to an online community of the indicated type for this course and section, and is for school purposes only.</label>
-                                <label><small>Links to malicious, inappropriate, copyrighted or otherwise illegal content are not allowed.</small></label>
+                                <label><small>Links to malicious, inappropriate, copyrighted or otherwise illegal content including Zoom and any online lecture links are not allowed.</small></label>
                             </div>
                         </div>
 
-                        <button type="submit" className="btn btn-danger" onClick={submit} >Create Link</button>
+                        <button type="submit" className="btn btn-danger" onClick={submit} disabled={!Object.values(formValid).every(formFieldValid => formFieldValid)}>Create Link</button>
                     </form>
                 </div>
             }
