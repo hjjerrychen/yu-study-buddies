@@ -83,7 +83,7 @@ function Course() {
                 <div className="row flex-row">
                     {
                         section.links.map((link) =>
-                            <div key={link._id} className="col-sm  pb-3">
+                            <div key={link._id} className="col-xl-3 col-lg-4 col-md-6  pb-3">
                                 <div className="card" >
                                     <div className="card-body">
                                         <h5 className="card-title">{link.type}</h5>

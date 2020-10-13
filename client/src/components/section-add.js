@@ -54,7 +54,8 @@ function SectionAdd() {
                 <div className="container">
                     <div className="d-flex justify-content-between">
                         <div>
-                            <h1>Add a Section to {course}</h1>
+                            <h1>Add a Section</h1>
+                            <p className="lead mb-0">{`${course.substring(0,2)}/${course.substring(2, course.length-4)} ${course.substring(course.length-4,course.length)}`}</p>
                         </div>
                     </div>
                 </div>

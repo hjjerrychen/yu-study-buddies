@@ -17,6 +17,7 @@ function LinkAdd() {
     const [submitted, setSubmitted] = useState(false);
     const [validateTerms, setValidateTerms] = useState(false);
     const [serverError, setServerError] = useState("");
+    const [noLinkHelpModal, setNoLinkHelpModal] = useState(false);
 
     const formValid = {
         "type": type !== "Select a type..." && type !== "",
@@ -47,7 +48,7 @@ function LinkAdd() {
             if (e.response?.status === 400) {
                 setServerError("Bad request.")
             }
-            else if(e.response?.status === 404){
+            else if (e.response?.status === 404) {
                 setServerError(`${e.response.data.error} Please check the URL of the page you are on and try again.`)
             }
             else if (e.response?.data?.error) {
@@ -64,11 +65,34 @@ function LinkAdd() {
                 <div className="container">
                     <div className="d-flex justify-content-between">
                         <div>
-                            <h1>Add a Link for {course}, Section {section}</h1>
+                            <h1>Add a Link</h1>
+                            <p className="lead mb-0">{`${course.substring(0, 2)}/${course.substring(2, course.length - 4)} ${course.substring(course.length - 4, course.length)}, Section ${section}`}</p>
                         </div>
                     </div>
                 </div>
             </div>
+            {
+                noLinkHelpModal &&
+                <div>
+                    {ReactGA.modalview("/no-link-help")}
+                    <div className="modal-backdrop fade show"></div>
+                    <div className="modal d-block">
+                        <div className="modal-dialog modal-dialog-scrollable" role="document">
+                            <div className="modal-content">
+                                <div className="modal-body">
+                                    <h5>What if the social media I use doesn't use links to invite people?</h5>
+                                    <p>There are many creative workarounds you can use. Some ideas are below:</p>
+                                    <p>For social media that uses QR codes to invite people, such as WeChat, take a screenshot of the QR code, upload it to a third-party website, such as <a href="https://imgur.com/"> imgur </a> and paste the image link here instead.</p>
+                                    <p>For social media that require direct invites, make a fake profile and link that profile here. People can add the fake profile, and then the person in charge of the fake profile can add them into the group chat.</p>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-outline-dark" onClick={() => setNoLinkHelpModal(false)}>Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
             { !submitted &&
                 <div className="container">
                     {
@@ -116,7 +140,10 @@ function LinkAdd() {
                         </div>
 
                         <div className="form-group">
-                            <label>URL</label>
+                            <label className="mr-3">URL</label>
+                            <small className="link-black" onClick={() => setNoLinkHelpModal(true)}>
+                                <i class="fas fa-question-circle" /> My group doesn't have a link
+                            </small>
                             <input
                                 type="text"
                                 className={classNames({
@@ -147,7 +174,7 @@ function LinkAdd() {
                                         setTerms(!terms)
                                     }} />
                                 <label className="form-check-label">I agree that the URL above links to an online community of the indicated type for this course and section, and is for school purposes only.</label>
-                                <label className="form-check-label"><small>Links to malicious, inappropriate, copyrighted or otherwise illegal content including Zoom and any online lecture links are not allowed.</small></label>
+                                <label className="form-check-label"><small>Links to malicious, inappropriate, copyrighted, or otherwise illegal content are not allowed. Do not post any Zoom links or links to online lectures. </small></label>
                                 <div className="invalid-feedback">Please agree to the terms to continue.</div>
                             </div>
                         </div>
