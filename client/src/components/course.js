@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from 'axios';
+import ReactGA from 'react-ga';
 
 function Course() {
     const { course } = useParams();
@@ -148,6 +149,7 @@ function Course() {
                 {
                     linkToReport !== "" &&
                     <div>
+                        {ReactGA.modalview("/report")}
                         <div className="modal-backdrop fade show"></div>
                         <div className="modal d-block">
                             <div className="modal-dialog modal-dialog-scrollable" role="document">

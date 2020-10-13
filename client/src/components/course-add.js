@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import axios from 'axios';
 import classNames from 'classnames';
 import ReCAPTCHA from "react-google-recaptcha";
+import ReactGA from 'react-ga';
 
 function CourseAdd() {
     const reRef = useRef();
@@ -31,13 +32,18 @@ function CourseAdd() {
             }
             reRef.current.reset();
             await axios.post("http://localhost:8080/courses/", request)
+            ReactGA.event({
+                category: 'User',
+                action: 'add-link',
+                value: window.location.pathname + window.location.search
+            });
             setSubmitted(true);
         }
         catch (e) {
             if (e.response?.status === 400) {
                 setServerError("Bad request.")
             }
-            else if(e.response?.status === 404){
+            else if (e.response?.status === 404) {
                 setServerError(`${e.response.data.error} Please check the URL of the page you are on and try again.`)
             }
             else if (e.response?.data?.error) {

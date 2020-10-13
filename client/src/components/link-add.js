@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import classNames from 'classnames';
 import ReCAPTCHA from "react-google-recaptcha";
+import ReactGA from 'react-ga';
 
 function LinkAdd() {
     const reRef = useRef();
@@ -35,6 +36,11 @@ function LinkAdd() {
             }
             reRef.current.reset();
             await axios.post(`http://localhost:8080/courses/${course}/sections/${section}/link`, request)
+            ReactGA.event({
+                category: 'User',
+                action: 'add-link',
+                value: window.location.pathname + window.location.search
+            });
             setSubmitted(true);
         }
         catch (e) {
