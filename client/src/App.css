@@ -54,16 +54,25 @@ select.form-control.is-valid{
 }
 
 /* Extra small devices (phones, 600px and down) */
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 576px) {
   nav {
     padding-left: 5%;
     padding-right: 5%;
   }
+
+  /* h1{
+    font-size: 250%;
+  } */
+
+  .sm-mb{
+    margin-bottom: 3%;
+  }
+
 }
 
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
-@media only screen and (min-width: 600px) {
+@media only screen and (min-width: 576px) {
   nav {
     padding-left: 5%;
     padding-right: 5%;

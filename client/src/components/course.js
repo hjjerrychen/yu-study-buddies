@@ -42,10 +42,10 @@ function Course() {
             setTimeout(() => setCopyButtonLabels({ ...copyButtonLabels, [id]: <span><i className="far fa-copy" /> Copy</span> }), 500);
         }
         catch (e) {
-            setCopyButtonLabels({ ...copyButtonLabels, [id]: <span><i class="fas fa-times"/> Not Supported!</span> })
+            setCopyButtonLabels({ ...copyButtonLabels, [id]: <span><i class="fas fa-times" /> Browser Not Supported!</span> })
             setTimeout(() => setCopyButtonLabels({ ...copyButtonLabels, [id]: <span><i className="far fa-copy" /> Copy</span> }), 500);
         }
-        
+
     }
 
     const closeReportModal = () => {
@@ -69,19 +69,25 @@ function Course() {
 
     const sections = courseDetails && courseDetails.sections.map((section) =>
         <div key={section.name} className="mt-3">
-            <div className="d-flex justify-content-between">
-                <h2 className="">{"Section " + section.name}</h2>
-                <a className="btn btn-outline-danger min-content" href={`${course}/sections/${section.name}/links/add`} role="button">Add Link for Section {section.name}</a>
+            <div className="container-fluid">
+                <div className="d-flex justify-content-between row ">
+                    <div className="col-sm-6">
+                        <h2>{"Section " + section.name}</h2>
+                    </div>
+                    <div className="col-sm-6  text-sm-right sm-mb">
+                        <a className="btn btn-outline-danger min-content " href={`${course}/sections/${section.name}/links/add`} role="button">Add Link for Section {section.name}</a>
+                    </div>
+                </div>
             </div>
             <div className="container-fluid">
                 <div className="row flex-row">
                     {
                         section.links.map((link) =>
-                            <div key={link._id} className="col-sm col-12 pb-3">
+                            <div key={link._id} className="col-sm  pb-3">
                                 <div className="card" >
                                     <div className="card-body">
                                         <h5 className="card-title">{link.type}</h5>
-                                        <p className="card-text bg-light"><small><samp><a href={link.url}>{link.url}</a></samp></small></p>
+                                        <p className="card-text bg-light text-break"><small><samp><a href={link.url}>{link.url}</a></samp></small></p>
                                         <p className="card-text mb-0">
                                             <small className="mr-3 link-black" onClick={() => copyToClipboard(link._id, link.url)}>{copyButtonLabels[link._id]}</small>
                                             <small className="link-black"
@@ -99,7 +105,7 @@ function Course() {
                     }
                     {
                         section.links.length === 0 && (
-                            <div className="col-12">
+                            <div className="col-12 pb-3">
                                 <div className="card" >
                                     <div className="card-body">
                                         <h6 className="card-text">There's no links yet for this section! Why don't you add one?</h6>
@@ -117,20 +123,20 @@ function Course() {
         <div className="nav-offset">
             <div className="jumbotron jumbotron-fluid">
                 <div className="container">
-                    <div className="d-flex justify-content-between">
-                        <div>
+                    <div className="d-flex justify-content-between row">
+                        <div className="col-sm-6 sm-mb" >
                             <h1>{courseDetails.faculty || ""}{courseDetails.faculty && "/"}{courseDetails.subject} {courseDetails.number}</h1>
                             <p className="lead mb-0">{courseDetails.name}</p>
                         </div>
-                        <div className="d-flex align-items-center">
-                            <div className="d-flex flex-column">
-                                <div className="d-flex flex-column">
-                                    <a className="btn btn-outline-light min-content" href={`${course}/sections/add`} role="button">Add Section</a>
+                        <div className="align-items-center col-lg-3 col-md-4 col-sm-6 justify-content-end">
+                            <div className=" flex-column ">
+                                <div className=" ">
+                                    <a className="btn-block btn btn-outline-light min-content" href={`${course}/sections/add`} role="button">Add Section</a>
                                 </div>
                                 {
                                     courseDetails.faculty && courseDetails.credits &&
-                                    <div className="d-flex flex-column mt-3">
-                                        <a className="btn btn-outline-light min-content"
+                                    <div className="  mt-3">
+                                        <a className="btn-block btn btn-outline-light min-content"
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             href={`https://w2prod.sis.yorku.ca/Apps/WebObjects/cdm.woa/wa/crsq?fa=${courseDetails.faculty}&sj=${courseDetails.subject}&cn=${courseDetails.number}&cr=${courseDetails.credits}&ay=2020&ss=FW`}
