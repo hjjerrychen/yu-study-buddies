@@ -35,9 +35,16 @@ function Course() {
     }, [course]);
 
     const copyToClipboard = (id, url) => {
-        navigator.clipboard.writeText(url)
-        setCopyButtonLabels({ ...copyButtonLabels, [id]: <span><i className="fas fa-check" /> Copied!</span> })
-        setTimeout(() => setCopyButtonLabels({ ...copyButtonLabels, [id]: <span><i className="far fa-copy" /> Copy</span> }), 500);
+        try {
+            navigator.clipboard.writeText(url)
+            setCopyButtonLabels({ ...copyButtonLabels, [id]: <span><i className="fas fa-check" /> Copied!</span> })
+            setTimeout(() => setCopyButtonLabels({ ...copyButtonLabels, [id]: <span><i className="far fa-copy" /> Copy</span> }), 500);
+        }
+        catch (e) {
+            setCopyButtonLabels({ ...copyButtonLabels, [id]: <span><i class="fas fa-times"/> Not Supported!</span> })
+            setTimeout(() => setCopyButtonLabels({ ...copyButtonLabels, [id]: <span><i className="far fa-copy" /> Copy</span> }), 500);
+        }
+        
     }
 
     const closeReportModal = () => {
@@ -142,8 +149,8 @@ function Course() {
                     linkToReport !== "" &&
                     <div>
                         <div className="modal-backdrop fade show"></div>
-                        <div className="modal fade show d-block">
-                            <div className="modal-dialog" role="document">
+                        <div className="modal d-block">
+                            <div className="modal-dialog modal-dialog-scrollable" role="document">
                                 <div className="modal-content">
                                     <div className="modal-header">
                                         <h5 className="modal-title" id="exampleModalLabel">{reportSubmitted ? "Report Submitted" : "Report a Link"}</h5>
@@ -174,6 +181,7 @@ function Course() {
                                                         <option value="Link is duplicate or already exists.">Link is duplicate or already exists.</option>
                                                         <option value="Link is for the wrong course or section.">Link is for the wrong course or section.</option>
                                                         <option value="Link was added by mistake.">Link was added by mistake.</option>
+                                                        <option value="Link is for an online lecture or to a Zoom meeting.">Link is for an online lecture or to a Zoom meeting.</option>
                                                     </select>
                                                     <div className="invalid-feedback">Please select a reason.</div>
                                                 </div>
