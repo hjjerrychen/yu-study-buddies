@@ -9,6 +9,43 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const { json } = require("body-parser");
 const fetch = require('node-fetch');
+const rateLimit = require("express-rate-limit");
+
+// limiters
+const newCourseLimiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 10
+  });
+
+  const newLinkLimiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 60
+  });
+
+  const newSectionLimiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 20
+  });
+
+  const courseSearchLimiter = rateLimit({
+    windowMs: 1000, // 1 second
+      max: 100,
+  });
+
+  const serverGeneralLimiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 second
+    max: 1000
+  });
+
+  const courseInfoLimiter = rateLimit({
+    windowMs: 30 * 1000, // 30 seconds
+    max: 30
+  });
+
+  const reportLimiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 10
+  });
 
 // constants
 const PORT = 8080;
@@ -48,6 +85,7 @@ mongoose
 // middleware
 app.use(cors());
 app.use(bodyParser.json());
+app.use(serverGeneralLimiter);
 
 // utility function
 const verifyReCaptcha = async (token) => {
@@ -89,7 +127,7 @@ app.get("/", (req, res) => res.send("Server is working."))
  *       number: course number code
  *     }]
  */
-app.get("/courses", async (req, res) => {
+app.get("/courses", courseSearchLimiter,async (req, res) => {
     // return courses with course code that matches parameter q(uery) if provided
     const property = {};
     if (req.query.q) property.$or = [{ 'name': { $regex: req.query.q, $options: 'i' } }, { 'code': { $regex: req.query.q.replace(" ", ""), $options: 'i' } }]
@@ -122,7 +160,7 @@ app.get("/courses", async (req, res) => {
  *         ]]
  *     }]
  */
-app.get("/courses/:code", async (req, res) => {
+app.get("/courses/:code", courseInfoLimiter, async (req, res) => {
     let code = req.params.code.trim().toUpperCase();
     if (!code) {
         return res.status(BAD_REQUEST).json({ error: "Bad request. Check parameters." })
@@ -157,7 +195,7 @@ app.get("/courses/:code", async (req, res) => {
  *     - 409: Course already exists. 
  *     - 500: Internal server error.
  */
-app.post("/courses/", async (req, res) => {
+app.post("/courses/", newCourseLimiter, async (req, res) => {
     try {
         if (!(req.body.name && req.body.subject && req.body.number && req.body.captcha && await verifyReCaptcha(req.body.captcha))) {
             return res.status(BAD_REQUEST).json({ error: "Bad request. Check parameters." })
@@ -193,7 +231,7 @@ app.post("/courses/", async (req, res) => {
  *     - 404: Course not found.
  *     - 500: Internal server error.
  */
-app.post("/courses/:code/sections", async (req, res) => {
+app.post("/courses/:code/sections", newSectionLimiter, async (req, res) => {
     const code = req.params.code.trim().toUpperCase();
     try {
         if (!(code && req.body.name && req.body.captcha && await verifyReCaptcha(req.body.captcha))) {
@@ -235,7 +273,7 @@ app.post("/courses/:code/sections", async (req, res) => {
  *     - 404: Course or section not found.
  *     - 500: Internal server error.
  */
-app.post("/courses/:code/sections/:section/link", async (req, res) => {
+app.post("/courses/:code/sections/:section/link", newLinkLimiter, async (req, res) => {
     const code = req.params.code.trim().toUpperCase();
     const section = req.params.section;
     try {
@@ -275,7 +313,7 @@ app.post("/courses/:code/sections/:section/link", async (req, res) => {
  *     - 404: Course or section not found.
  *     - 500: Internal server error.
  */
-app.post("/report", async (req, res) => {
+app.post("/report", reportLimiter, async (req, res) => {
 
     if (!(req.body.link_id && req.body.reason)) {
         return res.status(BAD_REQUEST).json({ error: "Bad request. Check parameters." })
