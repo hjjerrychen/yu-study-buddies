@@ -4,7 +4,6 @@ import axios from 'axios';
 import classNames from 'classnames';
 import ReCAPTCHA from "react-google-recaptcha";
 import ReactGA from 'react-ga';
-import * as CONSTANTS from '../constants';
 
 function CourseAdd() {
     const reRef = useRef();
@@ -38,7 +37,7 @@ function CourseAdd() {
                 "captcha": await reRef.current.executeAsync()
             }
             reRef.current.reset();
-            await axios.post(`${CONSTANTS.SERVER}/courses/`, request)
+            await axios.post(`${process.env.REACT_APP_SERVER || "http://localhost:3000"}/courses/`, request)
             ReactGA.event({
                 category: 'User',
                 action: 'add-link'

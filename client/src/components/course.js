@@ -6,7 +6,6 @@ import axios from 'axios';
 import ReactGA from 'react-ga';
 import classNames from 'classnames';
 import ReCAPTCHA from "react-google-recaptcha";
-import * as CONSTANTS from '../constants';
 
 function Course() {
     const reRef = useRef();
@@ -21,7 +20,7 @@ function Course() {
 
 
     useEffect(() => {
-        const getCourseData = async () => await axios.get(`${CONSTANTS.SERVER}/courses/${course}`)
+        const getCourseData = async () => await axios.get(`${process.env.REACT_APP_SERVER || "http://localhost:3000"}/courses/${course}`)
             .then(response => {
                 setCourseDetails(response.data)
                 const copyButtonLabel = {}
@@ -79,7 +78,7 @@ function Course() {
                 "captcha": await reRef.current.executeAsync()
             }
             reRef.current.reset();
-            await axios.post(`${CONSTANTS.SERVER}/report`, request)
+            await axios.post(`${process.env.REACT_APP_SERVER || "http://localhost:3000"}/report`, request)
 
             ReactGA.event({
                 category: 'User',
