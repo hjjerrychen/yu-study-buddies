@@ -5,6 +5,7 @@ import axios from 'axios';
 import classNames from 'classnames';
 import ReCAPTCHA from "react-google-recaptcha";
 import ReactGA from 'react-ga';
+import * as CONSTANTS from '../constants';
 
 function SectionAdd() {
     let { course } = useParams();
@@ -17,7 +18,7 @@ function SectionAdd() {
     const [courseDetails, setCourseDetails] = useState("");
 
     useEffect(() => {
-        const getCourseData = async () => await axios.get(`http://localhost:8080/courses/${course}`)
+        const getCourseData = async () => await axios.get(`${CONSTANTS.SERVER}/courses/${course}`)
             .then(response => {
                 setCourseDetails(response.data)
             })
@@ -37,11 +38,10 @@ function SectionAdd() {
                 "captcha": await reRef.current.executeAsync()
             }
             reRef.current.reset();
-            await axios.post(`http://localhost:8080/courses/${course}/sections`, request)
+            await axios.post(`${CONSTANTS.SERVER}/courses/${course}/sections`, request)
             ReactGA.event({
                 category: 'User',
-                action: 'add-link',
-                value: window.location.pathname + window.location.search
+                action: 'add-link'
             });
             setSubmitted(true);
         }

@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from 'axios';
 import ReactGA from 'react-ga';
 import classNames from 'classnames';
+import ReCAPTCHA from "react-google-recaptcha";
+import * as CONSTANTS from '../constants';
 
 function Course() {
+    const reRef = useRef();
+
     const { course } = useParams();
     const [courseDetails, setCourseDetails] = useState("");
     const [linkToReport, setLinkToReport] = useState("");
@@ -17,7 +21,7 @@ function Course() {
 
 
     useEffect(() => {
-        const getCourseData = async () => await axios.get(`http://localhost:8080/courses/${course}`)
+        const getCourseData = async () => await axios.get(`${CONSTANTS.SERVER}/courses/${course}`)
             .then(response => {
                 setCourseDetails(response.data)
                 const copyButtonLabel = {}
@@ -58,21 +62,36 @@ function Course() {
         setReportSubmitted(false);
     }
 
-    const reportLink = () => {
-        const request = {
-            "link_id": linkToReport.id,
-            "reason": linkToReport.reason
+    const reportLink = async () => {
+        try {
+            const request = {
+                "link_id": linkToReport.id,
+                "reason": linkToReport.reason,
+                "captcha": await reRef.current.executeAsync()
+            }
+            reRef.current.reset();
+            await axios.post(`${CONSTANTS.SERVER}/report`, request)
+
+            ReactGA.event({
+                category: 'User',
+                action: 'report'
+            });
+            setReportSubmitted(true);
         }
-        axios.post(`http://localhost:8080/report`, request)
-            .then(response => {
-                console.log("success")
-                setReportSubmitted(true);
-            })
-            .catch((error) => {
-                if (error.response?.status === 429) {
-                    setReportError("That's too many requests! Try again later.")
-                }
-            })
+        catch (e) {
+            if (e.response?.status === 400) {
+                setReportError("Bad request.")
+            }
+            else if (e.response?.status === 429) {
+                setReportError("That's too many requests! Try again later.")
+            }
+            else if (e.response?.data?.error) {
+                setReportError(e.response.data.error)
+            }
+            else {
+                setReportError("Things aren't working right now. Please try again later.")
+            }
+        }
     }
 
     const sections = courseDetails && courseDetails.sections.map((section) =>
@@ -131,7 +150,7 @@ function Course() {
         <div className="nav-offset">
             <div className="jumbotron jumbotron-fluid">
                 <div className="container">
-                    { !serverError &&
+                    {!serverError &&
                         <div className="d-flex justify-content-between row">
                             <div className="col-sm-6 sm-mb" >
                                 <h1>{courseDetails.faculty}/{courseDetails.subject} {courseDetails.number} {courseDetails.credits}</h1>
@@ -215,6 +234,7 @@ function Course() {
                                                         <option value="Link is for an online lecture or to a Zoom meeting.">Link is for an online lecture or to a Zoom meeting.</option>
                                                     </select>
                                                     <div className="invalid-feedback">Please select a reason.</div>
+                                                    <ReCAPTCHA sitekey="6LdgVNYZAAAAAPBMSaqI_px7PyL1As_XkTmLAXVa" size="invisible" ref={reRef} />
                                                 </div>
                                             </div>
                                         }

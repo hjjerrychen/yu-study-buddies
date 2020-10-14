@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from 'axios';
+import * as CONSTANTS from '../constants';
 
 import "./home.css";
 
@@ -33,7 +34,7 @@ function Home() {
             <h1 id="welcome-text" className="text-white">Find group chats. Connect with classmates. Ace your courses.</h1>
             <input type="text" className="form-control form-control-lg rounded-0" placeholder="Search for courses by code or name" value={searchText} onChange={async (e) => {
                 setSearchText(e.target.value)
-                await axios.get(`http://localhost:8080/courses?l=5&q=${searchText}`)
+                await axios.get(`${CONSTANTS.SERVER}/courses?l=5&q=${searchText}`)
                     .then(response => {
                         setSearchResults(response.data)
                     })

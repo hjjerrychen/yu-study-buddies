@@ -32,11 +32,6 @@ const newCourseLimiter = rateLimit({
       max: 100,
   });
 
-  const serverGeneralLimiter = rateLimit({
-    windowMs: 1 * 60 * 1000, // 1 second
-    max: 100
-  });
-
   const courseInfoLimiter = rateLimit({
     windowMs: 1000, // 1 second
     max: 20
@@ -44,7 +39,7 @@ const newCourseLimiter = rateLimit({
 
   const reportLimiter = rateLimit({
     windowMs: 1 * 60 * 1000, // 1 minute
-    max: 1
+    max: 10
   });
 
 // constants
@@ -85,7 +80,6 @@ mongoose
 // middleware
 app.use(cors());
 app.use(bodyParser.json());
-app.use(serverGeneralLimiter);
 
 // utility function
 const verifyReCaptcha = async (token) => {
@@ -109,7 +103,7 @@ const verifyReCaptcha = async (token) => {
  * RESPONSE
  *   - none
  */
-app.get("/", (req, res) => res.send("Server is working."))
+app.get("/", courseSearchLimiter, (req, res) => res.send("Server is working."))
 
 /**
  * GET  /courses/
@@ -316,7 +310,7 @@ app.post("/courses/:code/sections/:section/link", newLinkLimiter, async (req, re
  */
 app.post("/report", reportLimiter, async (req, res) => {
 
-    if (!(req.body.link_id && req.body.reason)) {
+    if (!(req.body.link_id && req.body.reason && req.body.captcha && await verifyReCaptcha(req.body.captcha))) {
         return res.status(BAD_REQUEST).json({ error: "Bad request. Check parameters." })
     }
     try {
