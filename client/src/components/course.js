@@ -27,7 +27,6 @@ function Course() {
                 setCopyButtonLabels(copyButtonLabel)
             })
             .catch((error) => {
-                console.log(error);
                 if (error.response?.status === 404) {
                     window.location.replace("/404");
                 }
@@ -125,7 +124,7 @@ function Course() {
                 <div className="container">
                     <div className="d-flex justify-content-between row">
                         <div className="col-sm-6 sm-mb" >
-                            <h1>{courseDetails.faculty || ""}{courseDetails.faculty && "/"}{courseDetails.subject} {courseDetails.number}</h1>
+                            <h1>{courseDetails.faculty}/{courseDetails.subject} {courseDetails.number} {courseDetails.credits}</h1>
                             <p className="lead mb-0">{courseDetails.name}</p>
                         </div>
                         <div className="align-items-center col-lg-3 col-md-4 col-sm-6 justify-content-end">

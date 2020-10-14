@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
@@ -18,13 +18,27 @@ function LinkAdd() {
     const [validateTerms, setValidateTerms] = useState(false);
     const [serverError, setServerError] = useState("");
     const [noLinkHelpModal, setNoLinkHelpModal] = useState(false);
+    const [courseDetails, setCourseDetails] = useState("");
 
     const formValid = {
-        "type": type !== "Select a type..." && type !== "",
+        "type": type !== "",
         "customType": (type !== "Other" && customType === "") || (customType.length > 0 && customType.length < 20 && type === "Other"),
         "url": /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/.test(url),
         "terms": terms,
     }
+
+    useEffect(() => {
+        const getCourseData = async () => await axios.get(`http://localhost:8080/courses/${course}`)
+            .then(response => {
+                setCourseDetails(response.data)
+            })
+            .catch((error) => {
+                if (error.response?.status === 404) {
+                    window.location.replace("/404");
+                }
+            })
+        getCourseData();
+    }, [course]);
 
     const submit = async (e) => {
         e.preventDefault();
@@ -69,7 +83,7 @@ function LinkAdd() {
                     <div className="d-flex justify-content-between">
                         <div>
                             <h1>Add a Link</h1>
-                            <p className="lead mb-0">{`${course.substring(0, 2)}/${course.substring(2, course.length - 4)} ${course.substring(course.length - 4, course.length)}, Section ${section}`}</p>
+                            <p className="lead mb-0">{courseDetails.faculty}/{courseDetails.subject} {courseDetails.number} {courseDetails.credits}</p>
                         </div>
                     </div>
                 </div>
@@ -138,7 +152,6 @@ function LinkAdd() {
                                     value={customType} onChange={(e) => setCustomType(e.target.value)}
                                     placeholder="Type" />
                             }
-                            {/* <small className="form-text text-muted">For WeChat</small> */}
                             <div className="invalid-feedback">Please enter a valid type.</div>
                         </div>
 
@@ -192,7 +205,7 @@ function LinkAdd() {
                 <div className="container">
                     <h1><i className="fas fa-check text-danger" /></h1>
                     <h1>The link has been added!</h1>
-                    <a className={"btn btn-danger mt-5"} href={`/courses/${course}`} role="button">{`Go Back to ${course.substring(0, 2)}/${course.substring(2, course.length - 4)} ${course.substring(course.length - 4, course.length)}`}</a>
+                    <a className={"btn btn-danger mt-5"} href={`/courses/${course}`} role="button">{`Go Back to ${courseDetails?.faculty}/${courseDetails?.subject} ${courseDetails?.number} ${courseDetails?.credits}`}</a>
                 </div>
             }
         </div>

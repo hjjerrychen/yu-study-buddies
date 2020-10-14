@@ -38,8 +38,8 @@ const newCourseLimiter = rateLimit({
   });
 
   const courseInfoLimiter = rateLimit({
-    windowMs: 30 * 1000, // 30 seconds
-    max: 30
+    windowMs: 1000, // 1 second
+    max: 20
   });
 
   const reportLimiter = rateLimit({
@@ -125,6 +125,7 @@ app.get("/", (req, res) => res.send("Server is working."))
  *       name: course name
  *       subject: course subject code
  *       number: course number code
+ *       credits: course credit value
  *     }]
  */
 app.get("/courses", courseSearchLimiter,async (req, res) => {
@@ -132,7 +133,7 @@ app.get("/courses", courseSearchLimiter,async (req, res) => {
     const property = {};
     if (req.query.q) property.$or = [{ 'name': { $regex: req.query.q, $options: 'i' } }, { 'code': { $regex: req.query.q.replace(" ", ""), $options: 'i' } }]
     try {
-        res.json(await Course.find(property, "-_id name faculty subject number", { limit: parseInt(req.query.l) || 0 }).exec())
+        res.json(await Course.find(property, "-_id name faculty subject number credits", { limit: parseInt(req.query.l) || 0 }).exec())
     }
     catch (err) {
         errorHandler(res, err);
@@ -197,10 +198,10 @@ app.get("/courses/:code", courseInfoLimiter, async (req, res) => {
  */
 app.post("/courses/", newCourseLimiter, async (req, res) => {
     try {
-        if (!(req.body.name && req.body.subject && req.body.number && req.body.captcha && await verifyReCaptcha(req.body.captcha))) {
+        if (!(req.body.name && req.body.subject && req.body.number && req.body.faculty && req.body.credits && req.body.captcha && await verifyReCaptcha(req.body.captcha))) {
             return res.status(BAD_REQUEST).json({ error: "Bad request. Check parameters." })
         }
-        course = await Course.findOne({ code: `${req.body.subject}${req.body.number}` }).exec();
+        course = await Course.findOne({ code: `${req.body.faculty}${req.body.subject}${req.body.number}${req.body.credits}` }).exec();
         if (course) {
             return res.status(CONFLICT).json({ error: "Course already exists." })
         }

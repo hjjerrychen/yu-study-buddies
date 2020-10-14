@@ -81,7 +81,7 @@ let course = new mongoose.Schema({
 }, { timestamps: true })
 
 course.pre('save', function (next) {
-    this.code = `${this.faculty || ""}${this.subject}${this.number}`
+    this.code = `${this.faculty}${this.subject}${this.number}${this.credits}`
     next();
 });
 

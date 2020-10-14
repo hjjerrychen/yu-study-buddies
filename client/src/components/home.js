@@ -14,9 +14,9 @@ function Home() {
 
     searchResultElements = searchResults && searchResults.map((result) =>
         <a className="list-group-item list-group-item-action"
-            href={`courses/${result.faculty || ""}${result.subject + result.number}`}
-            key={result?.faculty + result.subject + result.number}>
-            <span className="font-weight-bold">{result.faculty || ""}{result.faculty && "/"}{result.subject} {result.number}</span> - {result.name}
+            href={`courses/${result.faculty + result.subject + result.number + result.credits}`}
+            key={result?.faculty + result.subject + result.number + result.credits}>
+            <span className="font-weight-bold">{result.faculty}/{result.subject} {result.number} {result.credits}</span> - {result.name}
         </a>
     );
 
@@ -36,9 +36,6 @@ function Home() {
                 await axios.get(`http://localhost:8080/courses?l=5&q=${searchText}`)
                     .then(response => {
                         setSearchResults(response.data)
-                    })
-                    .catch((error) => {
-                        console.log(error);
                     })
             }} />
             <ul className="list-group rounded-0">

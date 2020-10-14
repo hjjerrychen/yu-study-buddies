@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
@@ -14,7 +14,20 @@ function SectionAdd() {
     const [submitted, setSubmitted] = useState(false);
     const nameValid = name.length > 0 && name.length <= 10;
     const [serverError, setServerError] = useState("");
+    const [courseDetails, setCourseDetails] = useState("");
 
+    useEffect(() => {
+        const getCourseData = async () => await axios.get(`http://localhost:8080/courses/${course}`)
+            .then(response => {
+                setCourseDetails(response.data)
+            })
+            .catch((error) => {
+                if (error.response?.status === 404) {
+                    window.location.replace("/404");
+                }
+            })
+        getCourseData();
+    }, [course]);
 
     const submit = async (e) => {
         e.preventDefault();
@@ -58,7 +71,7 @@ function SectionAdd() {
                     <div className="d-flex justify-content-between">
                         <div>
                             <h1>Add a Section</h1>
-                            <p className="lead mb-0">{`${course.substring(0,2)}/${course.substring(2, course.length-4)} ${course.substring(course.length-4,course.length)}`}</p>
+                            <p className="lead mb-0">{courseDetails.faculty}/{courseDetails.subject} {courseDetails.number} {courseDetails.credits}</p>
                         </div>
                     </div>
                 </div>
@@ -97,8 +110,9 @@ function SectionAdd() {
             {
                 submitted &&
                 <div className="container">
+                    <h1><i className="fas fa-check text-danger" /></h1>
                     <h1>The section has been created!</h1>
-                    <a className={"btn btn-danger mt-5"} href={`/courses/${course}`} role="button">{`Go back to $${course.substring(0, 2)}/${course.substring(2, course.length - 4)} ${course.substring(course.length - 4, course.length)}`}</a>
+                    <a className={"btn btn-danger mt-5"} href={`/courses/${course}`} role="button">{`Go back to ${courseDetails?.faculty}/${courseDetails?.subject} ${courseDetails?.number} ${courseDetails?.credits}`}</a>
                 </div>
             }
         </div>

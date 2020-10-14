@@ -11,13 +11,17 @@ function CourseAdd() {
     const [subject, setSubject] = useState("");
     const [number, setNumber] = useState("");
     const [name, setName] = useState("");
+    const [faculty, setFaculty] = useState("");
+    const [credits, setCredits] = useState("");
     const [submitted, setSubmitted] = useState(false);
     const [serverError, setServerError] = useState("");
 
     const formValid = {
         "subject": subject.length >= 2 && subject.length <= 4,
         "number": number.length === 4 && Number(number.charAt(0)) > 0,
-        "name": name.length > 0 && name.length <= 100
+        "name": name.length > 0 && name.length <= 100,
+        "faculty": faculty.length == 2,
+        "credits": /^[0-9]{1,2}.[0|5]0$/.test(credits),
     }
 
     const submit = async (e) => {
@@ -28,6 +32,8 @@ function CourseAdd() {
                 "name": name,
                 "subject": subject,
                 "number": number,
+                "faculty": faculty,
+                "credits": credits,
                 "captcha": await reRef.current.executeAsync()
             }
             reRef.current.reset();
@@ -81,7 +87,31 @@ function CourseAdd() {
                     <form>
                         <label>Course Code</label>
                         <div className="form-row">
-                            <div className="form-group col-md-6">
+                            <div className="form-group col-md-4">
+                                <small className="form-text text-muted">Faculty</small>
+                                <select className={classNames({
+                                    "form-control": true,
+                                    "rounded-0": true,
+                                    "is-valid": formValid.faculty,
+                                    "is-invalid": !formValid.faculty && faculty
+                                })} value={faculty} onChange={(e) => setFaculty(e.target.value)} >
+                                    <option value="">Select a faculty...</option>
+                                    <option value="AP">AP</option>
+                                    <option value="ED">ED</option>
+                                    <option value="ES">ES</option>
+                                    <option value="EU">EU</option>
+                                    <option value="FA">FA</option>
+                                    <option value="GL">GL</option>
+                                    <option value="GS">GS</option>
+                                    <option value="HH">HH</option>
+                                    <option value="LE">LE</option>
+                                    <option value="LW">LW</option>
+                                    <option value="SB">SB</option>
+                                    <option value="SC">SC</option>
+                                </select>
+                                <div className="invalid-feedback">Please enter a faculty.</div>
+                            </div>
+                            <div className="form-group col-md-3">
                                 <small className="form-text text-muted">Subject Code</small>
                                 <input
                                     type="text"
@@ -97,7 +127,7 @@ function CourseAdd() {
                                 />
                                 <div className="invalid-feedback">Please enter a valid subject code.</div>
                             </div>
-                            <div className="form-group col-md-6">
+                            <div className="form-group col-md-3">
                                 <small className="form-text text-muted">Course Number</small>
                                 <input
                                     type="text"
@@ -113,6 +143,23 @@ function CourseAdd() {
                                     maxLength="4"
                                 />
                                 <div className="invalid-feedback">Please enter a valid course number.</div>
+                            </div>
+                            <div className="form-group col-md-2">
+                                <small className="form-text text-muted">Credits</small>
+                                <input
+                                    type="text"
+                                    className={classNames({
+                                        "form-control": true,
+                                        "rounded-0": true,
+                                        "is-valid": formValid.credits,
+                                        "is-invalid": !formValid.credits && credits
+                                    })}
+                                    value={credits}
+                                    onChange={(e) => setCredits(e.target.value.replace(/[^0-9.]/g, ''))}
+                                    placeholder="3.00"
+                                    maxLength="4"
+                                />
+                                <div className="invalid-feedback">Please enter a valid credit value.</div>
                             </div>
                         </div>
                         <div className="form-group">
@@ -142,8 +189,9 @@ function CourseAdd() {
             {
                 submitted &&
                 <div className="container">
+                    <h1><i className="fas fa-check text-danger" /></h1>
                     <h1>The course has been created!</h1>
-                    <a className={"btn btn-danger mt-5"} href={`/courses/${subject}${number}`} role="button">{`Go to ${subject} ${number}`}</a>
+                    <a className={"btn btn-danger mt-5"} href={`/courses/${faculty}${subject}${number}${credits}`} role="button">{`Go to ${faculty}/${subject} ${number} ${credits}`}</a>
                 </div>
             }
         </div>
