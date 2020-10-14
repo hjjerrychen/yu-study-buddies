@@ -28,7 +28,7 @@ function LinkAdd() {
     }
 
     useEffect(() => {
-        const getCourseData = async () => await axios.get(`${process.env.REACT_APP_SERVER || "http://localhost:3000"}/courses/${course}`)
+        const getCourseData = async () => await axios.get(`${process.env.REACT_APP_SERVER || "http://localhost:8080"}/courses/${course}`)
             .then(response => {
                 setCourseDetails(response.data)
             })
@@ -50,7 +50,7 @@ function LinkAdd() {
                 "captcha": await reRef.current.executeAsync()
             }
             reRef.current.reset();
-            await axios.post(`${process.env.REACT_APP_SERVER || "http://localhost:3000"}/courses/${course}/sections/${section}/link`, request)
+            await axios.post(`${process.env.REACT_APP_SERVER || "http://localhost:8080"}/courses/${course}/sections/${section}/link`, request)
             ReactGA.event({
                 category: 'User',
                 action: 'add-link'
@@ -62,7 +62,7 @@ function LinkAdd() {
                 setServerError("Bad request.")
             }
             else if (e.response?.status === 404) {
-                setServerError(`${e.response.data.error} Please check the URL of the page you are on and try again.`)
+                setServerError("Please check the URL of the page you are on and try again.")
             }
             else if (e.response?.status === 429) {
                 setServerError("That's too many requests! Try again later.")

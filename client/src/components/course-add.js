@@ -18,7 +18,7 @@ function CourseAdd() {
 
     const formValid = {
         "subject": subject.length >= 2 && subject.length <= 4,
-        "number": number.length === 4 && Number(number.charAt(0)) > 0,
+        "number": /^[0-9]{4}[A-Z]?$/.test(number),
         "name": name.length > 0 && name.length <= 100,
         "faculty": faculty.length === 2,
         "credits": /^[0-9]{1,2}.[0|5]0$/.test(credits),
@@ -37,7 +37,7 @@ function CourseAdd() {
                 "captcha": await reRef.current.executeAsync()
             }
             reRef.current.reset();
-            await axios.post(`${process.env.REACT_APP_SERVER || "http://localhost:3000"}/courses/`, request)
+            await axios.post(`${process.env.REACT_APP_SERVER || "http://localhost:8080"}/courses/`, request)
             ReactGA.event({
                 category: 'User',
                 action: 'add-link'
@@ -49,7 +49,7 @@ function CourseAdd() {
                 setServerError("Bad request.")
             }
             else if (e.response?.status === 404) {
-                setServerError(`${e.response.data.error} Please check the URL of the page you are on and try again.`)
+                setServerError("Please check the URL of the page you are on and try again.")
             }
             else if (e.response?.status === 429) {
                 setServerError("That's too many requests! Try again later.")
@@ -137,9 +137,9 @@ function CourseAdd() {
                                         "is-invalid": !formValid.number && number
                                     })}
                                     value={number}
-                                    onChange={(e) => setNumber(e.target.value.replace(/[^0-9]/g, ''))}
+                                    onChange={(e) => setNumber(e.target.value.replace(/[^0-9A-Z]/g, ''))}
                                     placeholder="1000"
-                                    maxLength="4"
+                                    maxLength="5"
                                 />
                                 <div className="invalid-feedback">Please enter a valid course number.</div>
                             </div>

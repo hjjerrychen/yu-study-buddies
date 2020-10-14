@@ -20,7 +20,7 @@ function Course() {
 
 
     useEffect(() => {
-        const getCourseData = async () => await axios.get(`${process.env.REACT_APP_SERVER || "http://localhost:3000"}/courses/${course}`)
+        const getCourseData = async () => await axios.get(`${process.env.REACT_APP_SERVER || "http://localhost:8080"}/courses/${course}`)
             .then(response => {
                 setCourseDetails(response.data)
                 const copyButtonLabel = {}
@@ -78,7 +78,7 @@ function Course() {
                 "captcha": await reRef.current.executeAsync()
             }
             reRef.current.reset();
-            await axios.post(`${process.env.REACT_APP_SERVER || "http://localhost:3000"}/report`, request)
+            await axios.post(`${process.env.REACT_APP_SERVER || "http://localhost:8080"}/report`, request)
 
             ReactGA.event({
                 category: 'User',
