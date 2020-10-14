@@ -7,7 +7,7 @@ const mongoose = require("mongoose");
 const Course = require("./models/course")["course"]
 const Section = require("./models/course")["section"]
 const Link = require("./models/course")["link"]
-
+const Report = require("./models/report")["report"]
 // connect to database
 mongoose
     .connect(process.env.MONGO_DB_URI, {
@@ -26,6 +26,8 @@ db.on('error', console.error.bind(console, 'connection error:'));
 
 db.once('open', async () => {
     await Course.deleteMany();
+    await Report.deleteMany();
+
     link1 = new Link({ type: "Discord", url: "https://discord.com/" });
     link2 = new Link({ type: "WhatsApp", url: "https://www.whatsapp.com/" });
     link3 = new Link({ type: "Facebook Messenger", url: "https://www.messenger.com/" });

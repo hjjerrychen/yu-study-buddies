@@ -2,3 +2,4 @@ node_modules
 package
 .env
 app.yaml
+courses.txt

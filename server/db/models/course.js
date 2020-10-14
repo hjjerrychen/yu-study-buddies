@@ -34,7 +34,7 @@ let course = new mongoose.Schema({
     name: {
         type: String,
         minlength: 1,
-        maxlength: 100,
+        maxlength: 200,
         trim: true
     },
     subject: {
@@ -57,15 +57,23 @@ let course = new mongoose.Schema({
         type: String,
         required: false,
         minlength: 4,
-        maxlength: 4,
-        trim: true
+        maxlength: 5,
+        trim: true,
+        validate: {
+            validator: (v) => /^[0-9]{1,2}.[0|5]0$/.test(v),
+            message: props => "The credits value is not valid!"
+        }
     },
     number: {
         type: String,
         required: true,
         minlength: 4,
-        maxlength: 4,
-        trim: true
+        maxlength: 5,
+        trim: true,
+        validate: {
+            validator: (v) => /^[0-9]{4}[A-Z]?$/.test(v),
+            message: props => "The course number is not valid!"
+        }
     },
     code: {
         type: String,
