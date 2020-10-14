@@ -33,7 +33,7 @@ function Course() {
                 }
                 setCopyButtonLabels(copyButtonLabel)
             })
-            .catch((error) => {
+            .catch((e) => {
                 if (e.response?.status === 400) {
                     setServerError("Bad request.")
                 }
@@ -198,7 +198,7 @@ function Course() {
                             <div className="modal-dialog modal-dialog-scrollable" role="document">
                                 <div className="modal-content">
                                     <div className="modal-header">
-                                        <h5 className="modal-title" id="exampleModalLabel">{reportSubmitted ? "Report Submitted" : "Report a Link"}</h5>
+                                        <h5 className="modal-title">{reportSubmitted ? "Report Submitted" : "Report a Link"}</h5>
                                         <button type="button" className="close" onClick={() => closeReportModal()}>
                                             <span aria-hidden="true">&times;</span>
                                         </button>

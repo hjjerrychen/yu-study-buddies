@@ -96,8 +96,10 @@ function LinkAdd() {
                     <div className="modal d-block">
                         <div className="modal-dialog modal-dialog-scrollable" role="document">
                             <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title">What if the social media I use doesn't use links to invite people?</h5>
+                                </div>
                                 <div className="modal-body">
-                                    <h5>What if the social media I use doesn't use links to invite people?</h5>
                                     <p>There are many creative workarounds you can use. Some ideas are below:</p>
                                     <p>For social media that uses QR codes to invite people, such as WeChat, take a screenshot of the QR code, upload it to a third-party website, such as <a href="https://imgur.com/"> imgur </a> and paste the image link here instead.</p>
                                     <p>For social media that require direct invites, make a fake profile and link that profile here. People can add the fake profile, and then the person in charge of the fake profile can add them into the group chat.</p>
