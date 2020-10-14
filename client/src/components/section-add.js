@@ -36,8 +36,11 @@ function SectionAdd() {
             if (e.response?.status === 400) {
                 setServerError("Bad request.")
             }
-            else if(e.response?.status === 404){
+            else if (e.response?.status === 404) {
                 setServerError(`${e.response.data.error} Please check the URL of the page you are on and try again.`)
+            }
+            else if (e.response?.status === 429) {
+                setServerError(`That's too many requests! Try again later.`)
             }
             else if (e.response?.data?.error) {
                 setServerError(e.response.data.error)
@@ -95,7 +98,7 @@ function SectionAdd() {
                 submitted &&
                 <div className="container">
                     <h1>The section has been created!</h1>
-                    <a className={"btn btn-danger mt-5"} href={`/courses/${course}`} role="button">{`Go back to ${course}`}</a>
+                    <a className={"btn btn-danger mt-5"} href={`/courses/${course}`} role="button">{`Go back to $${course.substring(0, 2)}/${course.substring(2, course.length - 4)} ${course.substring(course.length - 4, course.length)}`}</a>
                 </div>
             }
         </div>

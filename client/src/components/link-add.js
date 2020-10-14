@@ -51,6 +51,9 @@ function LinkAdd() {
             else if (e.response?.status === 404) {
                 setServerError(`${e.response.data.error} Please check the URL of the page you are on and try again.`)
             }
+            else if (e.response?.status === 429) {
+                setServerError(`That's too many requests! Try again later.`)
+            }
             else if (e.response?.data?.error) {
                 setServerError(e.response.data.error)
             }
@@ -110,7 +113,7 @@ function LinkAdd() {
                                 "is-valid": formValid.type,
                                 "is-invalid": !formValid.type && type
                             })} value={type} onChange={(e) => setType(e.target.value)} >
-                                <option value="none">Select a type...</option>
+                                <option value="">Select a type...</option>
                                 <option value="WhatsApp">WhatsApp</option>
                                 <option value="Discord">Discord</option>
                                 <option value="Facebook Messenger">Facebook Messenger</option>
@@ -142,7 +145,7 @@ function LinkAdd() {
                         <div className="form-group">
                             <label className="mr-3">URL</label>
                             <small className="link-black" onClick={() => setNoLinkHelpModal(true)}>
-                                <i class="fas fa-question-circle" /> My group doesn't have a link
+                                <i className="fas fa-question-circle" /> My group doesn't have a link
                             </small>
                             <input
                                 type="text"
@@ -189,7 +192,7 @@ function LinkAdd() {
                 <div className="container">
                     <h1><i className="fas fa-check text-danger" /></h1>
                     <h1>The link has been added!</h1>
-                    <a className={"btn btn-danger mt-5"} href={`/courses/${course}`} role="button">{`Go Back to ${course}`}</a>
+                    <a className={"btn btn-danger mt-5"} href={`/courses/${course}`} role="button">{`Go Back to ${course.substring(0, 2)}/${course.substring(2, course.length - 4)} ${course.substring(course.length - 4, course.length)}`}</a>
                 </div>
             }
         </div>

@@ -42,7 +42,7 @@ function Course() {
             setTimeout(() => setCopyButtonLabels({ ...copyButtonLabels, [id]: <span><i className="far fa-copy" /> Copy</span> }), 500);
         }
         catch (e) {
-            setCopyButtonLabels({ ...copyButtonLabels, [id]: <span><i class="fas fa-times" /> Browser Not Supported!</span> })
+            setCopyButtonLabels({ ...copyButtonLabels, [id]: <span><i className="fas fa-times" /> Browser Not Supported!</span> })
             setTimeout(() => setCopyButtonLabels({ ...copyButtonLabels, [id]: <span><i className="far fa-copy" /> Copy</span> }), 500);
         }
 
