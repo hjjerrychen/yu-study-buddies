@@ -34,8 +34,17 @@ function Course() {
                 setCopyButtonLabels(copyButtonLabel)
             })
             .catch((error) => {
-                if (error.response?.status === 404) {
+                if (e.response?.status === 400) {
+                    setServerError("Bad request.")
+                }
+                else if (e.response?.status === 404) {
                     window.location.replace("/404");
+                }
+                else if (e.response?.status === 429) {
+                    setServerError("That's too many requests! Try again later.")
+                }
+                else if (e.response?.data?.error) {
+                    setServerError(e.response.data.error)
                 }
                 else {
                     setServerError("Things aren't working right now. Please try again later.")
