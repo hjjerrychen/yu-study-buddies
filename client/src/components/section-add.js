@@ -53,7 +53,7 @@ function SectionAdd() {
                 setServerError(`${e.response.data.error} Please check the URL of the page you are on and try again.`)
             }
             else if (e.response?.status === 429) {
-                setServerError(`That's too many requests! Try again later.`)
+                setServerError("That's too many requests! Try again later.")
             }
             else if (e.response?.data?.error) {
                 setServerError(e.response.data.error)

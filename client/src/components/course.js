@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from 'axios';
 import ReactGA from 'react-ga';
+import classNames from 'classnames';
 
 function Course() {
     const { course } = useParams();
@@ -11,6 +12,8 @@ function Course() {
     const [linkToReport, setLinkToReport] = useState("");
     const [copyButtonLabels, setCopyButtonLabels] = useState("");
     const [reportSubmitted, setReportSubmitted] = useState(false);
+    const [reportError, setReportError] = useState("");
+    const [serverError, setServerError] = useState("");
 
 
     useEffect(() => {
@@ -29,6 +32,9 @@ function Course() {
             .catch((error) => {
                 if (error.response?.status === 404) {
                     window.location.replace("/404");
+                }
+                else {
+                    setServerError("Things aren't working right now. Please try again later.")
                 }
             })
         getCourseData();
@@ -59,10 +65,13 @@ function Course() {
         }
         axios.post(`http://localhost:8080/report`, request)
             .then(response => {
+                console.log("success")
                 setReportSubmitted(true);
             })
             .catch((error) => {
-                console.log(error);
+                if (error.response?.status === 429) {
+                    setReportError("That's too many requests! Try again later.")
+                }
             })
     }
 
@@ -90,7 +99,7 @@ function Course() {
                                         <p className="card-text mb-0">
                                             <small className="mr-3 link-black" onClick={() => copyToClipboard(link._id, link.url)}>{copyButtonLabels[link._id]}</small>
                                             <small className="link-black"
-                                                onClick={() => setLinkToReport({ id: link._id, type: link.type, url: link.url, date: new Date(link.updatedAt).toDateString() })}>
+                                                onClick={() => setLinkToReport({ id: link._id, type: link.type, url: link.url, date: new Date(link.updatedAt).toDateString(), reason: "" })}>
                                                 <i className="fas fa-exclamation-circle" /> Report
                                             </small>
                                         </p>
@@ -122,32 +131,33 @@ function Course() {
         <div className="nav-offset">
             <div className="jumbotron jumbotron-fluid">
                 <div className="container">
-                    <div className="d-flex justify-content-between row">
-                        <div className="col-sm-6 sm-mb" >
-                            <h1>{courseDetails.faculty}/{courseDetails.subject} {courseDetails.number} {courseDetails.credits}</h1>
-                            <p className="lead mb-0">{courseDetails.name}</p>
-                        </div>
-                        <div className="align-items-center col-lg-3 col-md-4 col-sm-6 justify-content-end">
-                            <div className=" flex-column ">
-                                <div className=" ">
-                                    <a className="btn-block btn btn-outline-light min-content" href={`${course}/sections/add`} role="button">Add Section</a>
-                                </div>
-                                {
-                                    courseDetails.faculty && courseDetails.credits &&
-                                    <div className="  mt-3">
-                                        <a className="btn-block btn btn-outline-light min-content"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            href={`https://w2prod.sis.yorku.ca/Apps/WebObjects/cdm.woa/wa/crsq?fa=${courseDetails.faculty}&sj=${courseDetails.subject}&cn=${courseDetails.number}&cr=${courseDetails.credits}&ay=2020&ss=FW`}
-                                            role="button">
-                                            View Course on REM <i className="fas fa-external-link-alt"></i>
-                                        </a>
+                    { !serverError &&
+                        <div className="d-flex justify-content-between row">
+                            <div className="col-sm-6 sm-mb" >
+                                <h1>{courseDetails.faculty}/{courseDetails.subject} {courseDetails.number} {courseDetails.credits}</h1>
+                                <p className="lead mb-0">{courseDetails.name}</p>
+                            </div>
+                            <div className="align-items-center col-lg-3 col-md-4 col-sm-6 justify-content-end">
+                                <div className=" flex-column ">
+                                    <div className=" ">
+                                        <a className="btn-block btn btn-outline-light min-content" href={`${course}/sections/add`} role="button">Add Section</a>
                                     </div>
-                                }
+                                    {
+                                        courseDetails.faculty && courseDetails.credits &&
+                                        <div className="  mt-3">
+                                            <a className="btn-block btn btn-outline-light min-content"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                href={`https://w2prod.sis.yorku.ca/Apps/WebObjects/cdm.woa/wa/crsq?fa=${courseDetails.faculty}&sj=${courseDetails.subject}&cn=${courseDetails.number}&cr=${courseDetails.credits}&ay=2020&ss=FW`}
+                                                role="button">
+                                                View Course on REM <i className="fas fa-external-link-alt"></i>
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
                             </div>
                         </div>
-                    </div>
-
+                    }
                 </div>
             </div>
             <div className="container">
@@ -169,6 +179,12 @@ function Course() {
                                         {
                                             !reportSubmitted &&
                                             <div>
+                                                {
+                                                    reportError &&
+                                                    <div className="alert alert-danger" role="alert">
+                                                        Error: {reportError}
+                                                    </div>
+                                                }
                                                 <div className="card" >
                                                     <div className="card-body">
                                                         <h6 className="card-title">{linkToReport.type}</h6>
@@ -180,8 +196,16 @@ function Course() {
                                                 </div>
                                                 <div className="form-group mt-3">
                                                     <label>Reason for Reporting</label>
-                                                    <select className="form-control rounded-0" value={linkToReport.reason} onChange={(e) => setLinkToReport({ ...linkToReport, reason: e.target.value })}>
-                                                        <option value="none">Select a reason...</option>
+                                                    <select
+                                                        className={classNames({
+                                                            "form-control": true,
+                                                            "rounded-0": true,
+                                                            "is-valid": linkToReport.reason !== "",
+                                                            "is-invalid": linkToReport.reason === "" && linkToReport.reason
+                                                        })}
+                                                        value={linkToReport.reason}
+                                                        onChange={(e) => setLinkToReport({ ...linkToReport, reason: e.target.value })}>
+                                                        <option value="">Select a reason...</option>
                                                         <option value="Link is malformed (not an URL).">Link is malformed (not an URL).</option>
                                                         <option value="Link is broken, doesn't work or expired.">Link is broken, doesn't work or expired.</option>
                                                         <option value="Link is suspicious, malicious, misleading or inappropriate.">Link is suspicious, malicious, misleading or inappropriate.</option>
@@ -206,12 +230,18 @@ function Course() {
                                         <button type="button" className="btn btn-outline-dark" onClick={() => closeReportModal()}>{reportSubmitted ? "Close" : "Cancel"}</button>
                                         {
                                             !reportSubmitted &&
-                                            <button type="button" className="btn btn-danger" onClick={() => reportLink()}>Submit</button>
+                                            <button type="button" className="btn btn-danger" disabled={linkToReport.reason === ""} onClick={() => reportLink()}>Submit</button>
                                         }
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                }
+                {
+                    serverError &&
+                    <div className="alert alert-danger" role="alert">
+                        Error: {serverError}
                     </div>
                 }
                 {courseDetails && sections}

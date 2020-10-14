@@ -20,7 +20,7 @@ function CourseAdd() {
         "subject": subject.length >= 2 && subject.length <= 4,
         "number": number.length === 4 && Number(number.charAt(0)) > 0,
         "name": name.length > 0 && name.length <= 100,
-        "faculty": faculty.length == 2,
+        "faculty": faculty.length === 2,
         "credits": /^[0-9]{1,2}.[0|5]0$/.test(credits),
     }
 
@@ -53,7 +53,7 @@ function CourseAdd() {
                 setServerError(`${e.response.data.error} Please check the URL of the page you are on and try again.`)
             }
             else if (e.response?.status === 429) {
-                setServerError(`That's too many requests! Try again later.`)
+                setServerError("That's too many requests! Try again later.")
             }
             else if (e.response?.data?.error) {
                 setServerError(e.response.data.error)

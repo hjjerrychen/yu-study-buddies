@@ -14,7 +14,7 @@ const rateLimit = require("express-rate-limit");
 // limiters
 const newCourseLimiter = rateLimit({
     windowMs: 1 * 60 * 1000, // 1 minute
-    max: 10
+    max: 20
   });
 
   const newLinkLimiter = rateLimit({
@@ -24,7 +24,7 @@ const newCourseLimiter = rateLimit({
 
   const newSectionLimiter = rateLimit({
     windowMs: 1 * 60 * 1000, // 1 minute
-    max: 20
+    max: 40
   });
 
   const courseSearchLimiter = rateLimit({
@@ -34,7 +34,7 @@ const newCourseLimiter = rateLimit({
 
   const serverGeneralLimiter = rateLimit({
     windowMs: 1 * 60 * 1000, // 1 second
-    max: 1000
+    max: 100
   });
 
   const courseInfoLimiter = rateLimit({
@@ -44,7 +44,7 @@ const newCourseLimiter = rateLimit({
 
   const reportLimiter = rateLimit({
     windowMs: 1 * 60 * 1000, // 1 minute
-    max: 10
+    max: 1
   });
 
 // constants
