@@ -233,13 +233,13 @@ function Course() {
                                                         value={linkToReport.reason}
                                                         onChange={(e) => setLinkToReport({ ...linkToReport, reason: e.target.value })}>
                                                         <option value="">Select a reason...</option>
-                                                        <option value="Link is malformed (not an URL).">Link is malformed (not an URL).</option>
-                                                        <option value="Link is broken, doesn't work or expired.">Link is broken, doesn't work or expired.</option>
-                                                        <option value="Link is suspicious, malicious, misleading or inappropriate.">Link is suspicious, malicious, misleading or inappropriate.</option>
-                                                        <option value="Link is duplicate or already exists.">Link is duplicate or already exists.</option>
-                                                        <option value="Link is for the wrong course or section.">Link is for the wrong course or section.</option>
-                                                        <option value="Link was added by mistake.">Link was added by mistake.</option>
-                                                        <option value="Link is for an online lecture or to a Zoom meeting.">Link is for an online lecture or to a Zoom meeting.</option>
+                                                        <option value="Malformed (not an URL).">Malformed (not an URL).</option>
+                                                        <option value="Broken, doesn't work or expired.">Broken, doesn't work or expired.</option>
+                                                        <option value="Inappropriate, malicious, misleading or suspicious.">Inappropriate, malicious, misleading or suspicious.</option>
+                                                        <option value="Duplicate or already exists.">Duplicate or already exists.</option>
+                                                        <option value="Wrong course or section.">Wrong course or section.</option>
+                                                        <option value="Added by mistake.">Added by mistake.</option>
+                                                        <option value="Zoom or online lecture link.">Zoom or online lecture link.</option>
                                                     </select>
                                                     <div className="invalid-feedback">Please select a reason.</div>
                                                     <ReCAPTCHA sitekey="6LdgVNYZAAAAAPBMSaqI_px7PyL1As_XkTmLAXVa" size="invisible" ref={reRef} />
