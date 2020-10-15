@@ -164,23 +164,20 @@ function Course() {
                                 <h1>{courseDetails.faculty}/{courseDetails.subject} {courseDetails.number} {courseDetails.credits}</h1>
                                 <p className="lead mb-0">{courseDetails.name}</p>
                             </div>
-                            <div className="align-items-center col-lg-3 col-md-4 col-sm-6 justify-content-end">
-                                <div className=" flex-column ">
-                                    <div className=" ">
+                            <div className="col-lg-3 col-md-4 col-sm-6 justify-content-end align-items-center d-flex">
+                                <div className="">
+                                    {/* <div className=" mb-3">
                                         <a className="btn-block btn btn-outline-light min-content" href={`${course}/sections/add`} role="button">Add Section</a>
-                                    </div>
-                                    {
-                                        courseDetails.faculty && courseDetails.credits &&
-                                        <div className="  mt-3">
-                                            <a className="btn-block btn btn-outline-light min-content"
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                href={`https://w2prod.sis.yorku.ca/Apps/WebObjects/cdm.woa/wa/crsq?fa=${courseDetails.faculty}&sj=${courseDetails.subject}&cn=${courseDetails.number}&cr=${courseDetails.credits}&ay=2020&ss=FW`}
-                                                role="button">
-                                                View Course on REM <i className="fas fa-external-link-alt"></i>
-                                            </a>
-                                        </div>
-                                    }
+                                    </div> */}
+                                    {/* <div> */}
+                                        <a className="btn-block btn btn-outline-light min-content"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            href={`https://w2prod.sis.yorku.ca/Apps/WebObjects/cdm.woa/wa/crsq?fa=${courseDetails.faculty}&sj=${courseDetails.subject}&cn=${courseDetails.number}&cr=${courseDetails.credits}&ay=2020&ss=FW`}
+                                            role="button">
+                                            View Course on REM <i className="fas fa-external-link-alt"></i>
+                                        </a>
+                                    {/* </div> */}
                                 </div>
                             </div>
                         </div>
