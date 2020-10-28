@@ -159,12 +159,12 @@ function Course() {
             <div className="jumbotron jumbotron-fluid">
                 <div className="container">
                     {!serverError &&
-                        <div className="d-flex justify-content-between row">
+                        <div className="justify-content-between row">
                             <div className="col-sm-6 sm-mb" >
                                 <h1>{courseDetails.faculty}/{courseDetails.subject} {courseDetails.number} {courseDetails.credits}</h1>
                                 <p className="lead mb-0">{courseDetails.name}</p>
                             </div>
-                            <div className="col-lg-3 col-md-4 col-sm-6 justify-content-end align-items-center d-flex">
+                            <div className="col-lg-3 col-md-4 col-sm-6 justify-content-end align-items-center align-self-center">
                                 <div className="">
                                     {/* <div className=" mb-3">
                                         <a className="btn-block btn btn-outline-light min-content" href={`${course}/sections/add`} role="button">Add Section</a>

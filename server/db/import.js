@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 // import model schema
 const Course = require("./models/course")["course"]
 const Section = require("./models/course")["section"]
-const Link = require("./models/course")["link"]
+const Report = require("./models/report")["report"]
 
 // import data for importing
 const COURSES = require("./data")
@@ -28,6 +28,7 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
 db.once('open', async () => {
+    await Report.deleteMany();
     await Course.deleteMany();
 
     for (const course of COURSES) {
