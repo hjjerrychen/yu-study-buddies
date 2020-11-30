@@ -20,13 +20,13 @@ function Home() {
         </a>
     );
 
-    // searchResultElements = searchResultElements.concat(
-    //     <a className="list-group-item list-group-item-action"
-    //         href="courses/add"
-    //         key="add">
-    //         <span className="font-weight-bold">Don't see your course?</span> Add it!
-    //     </a>
-    // );
+    searchResultElements = searchResultElements.concat(
+        <a className="list-group-item list-group-item-action"
+            href="courses/add"
+            key="add">
+            <span className="font-weight-bold">Don't see your course?</span> Add it!
+        </a>
+    );
 
     return (
         <div className="container top-spacing nav-offset" >
