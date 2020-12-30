@@ -82,7 +82,7 @@ function LinkAdd() {
                     <div className="d-flex justify-content-between">
                         <div>
                             <h1>Add a Link</h1>
-                            <p className="lead mb-0">{courseDetails.faculty}/{courseDetails.subject} {courseDetails.number} {courseDetails.credits}</p>
+                            <p className="lead mb-0">{courseDetails.faculty}/{courseDetails.subject} {courseDetails.number} {courseDetails.credits} (Section {section}) </p>
                         </div>
                     </div>
                 </div>

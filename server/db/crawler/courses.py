@@ -3,6 +3,7 @@ import requests
 from time import sleep
 import pymongo
 import json
+import re
 
 # https://w2prod.sis.yorku.ca/Apps/WebObjects/cdm under "View Active Course Timetables" on the right sidebar
 URLS = [
@@ -181,6 +182,15 @@ for i, soup in enumerate(soups):
                 #     "section": []
                 # }
 
+for course in list(courses):
+    for section in list(course["section"]):
+        for offering in list(section["offering"]):
+            if "Cancelled" in offering["catalogueCode"] or "Backup" in offering["notes"]:
+                section["offering"].remove(offering)
+        if not section["offering"] or section["term"] == "F":
+            course["section"].remove(section)
+    # if not course["section"]:
+    #     courses.remove(course)
 unique_courses = {}
 for course in courses:
     if course['faculty'] + course['subject'] + course['number'] + course['credits'] not in unique_courses:
@@ -190,15 +200,26 @@ for course in courses:
             "number": course['number'],
             "credits": course['credits'],
             "name": course['name'],
-            "sections": [f"{section['letter']} ({section['term']})" for section in course["section"]]
+            "sections": [f"{section['letter']}" for section in course["section"]]
         }
     else:
-        unique_courses[course['faculty'] + course['subject'] + course['number'] + course['credits']]["sections"].extend([f"{section['letter']} ({section['term']})" for section in course["section"]])
+        unique_courses[course['faculty'] + course['subject'] + course['number'] + course['credits']]["sections"].extend([f"{section['letter']}" for section in course["section"]])
         unique_courses[course['faculty'] + course['subject'] + course['number'] + course['credits']]["sections"] = list(set(unique_courses[course['faculty'] + course['subject'] + course['number'] + course['credits']]["sections"]))
     
     unique_courses[course['faculty'] + course['subject'] + course['number'] + course['credits']]["sections"].sort()
 
-f=open("courses.txt","w+")
+
+
+# for key, course in list(unique_courses.items()):
+#     for section in list(course["sections"]):
+#         if re.search("\(F\)$", section):
+#             course["sections"].remove(section)
+    
+    # if not course["sections"]:
+    #     unique_courses.pop(key)
+        
+
+f=open("courses.txt","w")
 f.write(json.dumps(list(unique_courses.values())))
 f.close()
-
+print("finished")
