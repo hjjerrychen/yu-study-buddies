@@ -27,10 +27,23 @@ function LinkAdd() {
         "terms": terms,
     }
 
+    const findSection = (sections, sectionToFind) => {
+        for (section of sections) {
+            if (section["name"] === sectionToFind){
+                return true
+            }
+        }
+        return false;
+    }
+
     useEffect(() => {
         const getCourseData = async () => await axios.get(`${process.env.REACT_APP_SERVER || "http://localhost:8080"}/courses/${course}`)
             .then(response => {
                 setCourseDetails(response.data)
+                if (!findSection(response.data["sections"], section)) {
+                    window.location.replace("/404");
+                }
+
             })
             .catch((error) => {
                 if (error.response?.status === 404) {
