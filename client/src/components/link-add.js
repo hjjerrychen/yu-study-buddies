@@ -36,22 +36,20 @@ function LinkAdd() {
         return false;
     }
 
-    useEffect(() => {
-        const getCourseData = async () => await axios.get(`${process.env.REACT_APP_SERVER || "http://localhost:8080"}/courses/${course}`)
-            .then(response => {
-                setCourseDetails(response.data)
-                if (!findSection(response.data["sections"], section)) {
-                    window.location.replace("/404");
-                }
+    const getCourseData = async () => await axios.get(`${process.env.REACT_APP_SERVER || "http://localhost:8080"}/courses/${course}`)
+        .then(response => {
+            setCourseDetails(response.data)
+            if (!findSection(response.data["sections"], section)) {
+                window.location.replace("/404");
+            }
 
-            })
-            .catch((error) => {
-                if (error.response?.status === 404) {
-                    window.location.replace("/404");
-                }
-            })
-        getCourseData();
-    }, [course]);
+        })
+        .catch((error) => {
+            if (error.response?.status === 404) {
+                window.location.replace("/404");
+            }
+        })
+    getCourseData();
 
     const submit = async (e) => {
         e.preventDefault();
