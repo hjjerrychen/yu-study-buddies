@@ -29,7 +29,7 @@ db.on('error', console.error.bind(console, 'connection error:'));
 
 db.once('open', async () => {
     await Report.deleteMany();
-    await Course.deleteMany();
+    await Course.deleteMany();    
 
     for (const course of COURSES) {
         sections = [new Section({ name: "All" })]

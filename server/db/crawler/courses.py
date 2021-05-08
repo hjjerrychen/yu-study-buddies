@@ -7,18 +7,9 @@ import re
 
 # https://w2prod.sis.yorku.ca/Apps/WebObjects/cdm under "View Active Course Timetables" on the right sidebar
 URLS = [
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2020AP.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2020ED.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2020ES.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2020EU.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2020FA.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2020GL.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2020GS.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2020HH.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2020LE.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2020LW.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2020SB.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2020SC.html",
+    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/SU2020UG.html",
+    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/SU2020GS.html",
+    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/SU2020SB.html",
 ]
 
 courses = []
@@ -189,8 +180,8 @@ for course in list(courses):
                 section["offering"].remove(offering)
         if not section["offering"] or section["term"] == "F":
             course["section"].remove(section)
-    # if not course["section"]:
-    #     courses.remove(course)
+    if not course["section"]:
+        courses.remove(course)
 unique_courses = {}
 for course in courses:
     if course['faculty'] + course['subject'] + course['number'] + course['credits'] not in unique_courses:
