@@ -166,10 +166,10 @@ function Course() {
                             </div>
                             <div className="col-lg-3 col-md-4 col-sm-6 justify-content-end align-items-center align-self-center">
                                 <div className="">
-                                    <div className=" mb-3">
+                                    {/* <div className="mb-3"> */}
                                         <a className="btn-block btn btn-outline-light min-content" href={`${course}/sections/add`} role="button">Add Section</a>
-                                    </div>
-                                    <div>
+                                    {/* </div> */}
+                                    {/* <div>
                                         <a className="btn-block btn btn-outline-light min-content"
                                             target="_blank"
                                             rel="noopener noreferrer"
@@ -177,7 +177,7 @@ function Course() {
                                             role="button">
                                             View Course on REM <i className="fas fa-external-link-alt"></i>
                                         </a>
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
                         </div>
