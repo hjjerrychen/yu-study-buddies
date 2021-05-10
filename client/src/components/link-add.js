@@ -35,8 +35,8 @@ function LinkAdd() {
         }
         return false;
     }
-
-    const getCourseData = async () => await axios.get(`${process.env.REACT_APP_SERVER || "http://localhost:8080"}/courses/${course}`)
+    useEffect(() => {
+        const getCourseData = async () => await axios.get(`${process.env.REACT_APP_SERVER || "http://localhost:8080"}/courses/${course}`)
         .then(response => {
             setCourseDetails(response.data)
             if (!findSection(response.data["sections"], section)) {
@@ -49,7 +49,9 @@ function LinkAdd() {
                 window.location.replace("/404");
             }
         })
-    getCourseData();
+        getCourseData();
+    }, [])
+    
 
     const submit = async (e) => {
         e.preventDefault();
