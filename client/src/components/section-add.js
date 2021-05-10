@@ -14,6 +14,7 @@ function SectionAdd() {
     const [submitted, setSubmitted] = useState(false);
     const nameValid = name.length > 0 && name.length <= 10;
     const [serverError, setServerError] = useState("");
+    const [terminalError, setTerminalError] = useState("");
     const [courseDetails, setCourseDetails] = useState("");
 
     useEffect(() => {
@@ -24,6 +25,9 @@ function SectionAdd() {
             .catch((error) => {
                 if (error.response?.status === 404) {
                     window.location.replace("/404");
+                }
+                else {
+                    setTerminalError("Things aren't working right now. Please try again later.")
                 }
             })
         getCourseData();
@@ -68,15 +72,18 @@ function SectionAdd() {
             <div className="jumbotron jumbotron-fluid">
                 <div className="container">
                     <div className="d-flex justify-content-between">
-                        <div>
-                            <h1>Add a Section</h1>
-                            <p className="lead mb-0">{courseDetails.faculty}/{courseDetails.subject} {courseDetails.number} {courseDetails.credits}</p>
-                        </div>
+                        {
+                            !terminalError &&
+                            <div>
+                                <h1>Add a Section</h1>
+                                <p className="lead mb-0">{courseDetails.faculty}/{courseDetails.subject} {courseDetails.number} {courseDetails.credits}</p>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
             {
-                !submitted &&
+                !submitted && !terminalError &&
                 <div className="container">
                     {
                         serverError &&
@@ -107,11 +114,19 @@ function SectionAdd() {
                 </div>
             }
             {
-                submitted &&
+                submitted && !terminalError &&
                 <div className="container">
                     <h1><i className="fas fa-check text-danger" /></h1>
                     <h1>The section has been created!</h1>
                     <a className={"btn btn-danger mt-5"} href={`/courses/${course}`} role="button">{`Go back to ${courseDetails?.faculty}/${courseDetails?.subject} ${courseDetails?.number} ${courseDetails?.credits}`}</a>
+                </div>
+            }
+            {
+                terminalError &&
+                <div className="container">
+                    <div className="alert alert-danger" role="alert">
+                        Error: {terminalError}
+                    </div>
                 </div>
             }
         </div>

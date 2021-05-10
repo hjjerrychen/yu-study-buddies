@@ -20,7 +20,7 @@ function Course() {
 
 
     useEffect(() => {
-        const getCourseData = async () => await axios.get(`${process.env.REACT_APP_SERVER || "http://localhost:8080"}/courses/${course}`)
+        const getCourseData = () => axios.get(`${process.env.REACT_APP_SERVER || "http://localhost:8080"}/courses/${course}`)
             .then(response => {
                 setCourseDetails(response.data)
                 const copyButtonLabel = {}

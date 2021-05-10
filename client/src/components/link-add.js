@@ -17,6 +17,7 @@ function LinkAdd() {
     const [submitted, setSubmitted] = useState(false);
     const [validateTerms, setValidateTerms] = useState(false);
     const [serverError, setServerError] = useState("");
+    const [terminalError, setTerminalError] = useState("");
     const [noLinkHelpModal, setNoLinkHelpModal] = useState(false);
     const [courseDetails, setCourseDetails] = useState("");
 
@@ -27,31 +28,37 @@ function LinkAdd() {
         "terms": terms,
     }
 
-    const findSection = (sections, sectionToFind) => {
-        for (section of sections) {
-            if (section["name"] === sectionToFind){
-                return true
-            }
-        }
-        return false;
-    }
-    useEffect(() => {
-        const getCourseData = async () => await axios.get(`${process.env.REACT_APP_SERVER || "http://localhost:8080"}/courses/${course}`)
-        .then(response => {
-            setCourseDetails(response.data)
-            if (!findSection(response.data["sections"], section)) {
-                window.location.replace("/404");
-            }
-
-        })
-        .catch((error) => {
-            if (error.response?.status === 404) {
-                window.location.replace("/404");
-            }
-        })
-        getCourseData();
-    }, [])
     
+
+    useEffect(() => {
+        const findSection = (sections, sectionToFind) => {
+            for (section of sections) {
+                if (section["name"] === sectionToFind) {
+                    return true
+                }
+            }
+            return false;
+        }
+
+        const getCourseData = () => axios.get(`${process.env.REACT_APP_SERVER || "http://localhost:8080"}/courses/${course}`)
+            .then(response => {
+                setCourseDetails(response.data)
+                if (!findSection(response.data["sections"], section)) {
+                    window.location.replace("/404");
+                }
+
+            })
+            .catch((error) => {
+                if (error.response?.status === 404) {
+                    window.location.replace("/404");
+                }
+                else {
+                    setTerminalError("Things aren't working right now. Please try again later.")
+                }
+            })
+        getCourseData();
+    }, [course, section])
+
 
     const submit = async (e) => {
         e.preventDefault();
@@ -93,15 +100,16 @@ function LinkAdd() {
             <div className="jumbotron jumbotron-fluid">
                 <div className="container">
                     <div className="d-flex justify-content-between">
-                        <div>
-                            <h1>Add a Link</h1>
-                            <p className="lead mb-0">{courseDetails.faculty}/{courseDetails.subject} {courseDetails.number} {courseDetails.credits} (Section {section}) </p>
-                        </div>
+                        {!terminalError &&
+                            <div>
+                                <h1>Add a Link</h1>
+                                <p className="lead mb-0">{courseDetails.faculty}/{courseDetails.subject} {courseDetails.number} {courseDetails.credits} (Section {section}) </p>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
-            {
-                noLinkHelpModal &&
+            {   noLinkHelpModal && !terminalError &&
                 <div>
                     {ReactGA.modalview("/no-link-help")}
                     <div className="modal-backdrop fade show"></div>
@@ -124,7 +132,7 @@ function LinkAdd() {
                     </div>
                 </div>
             }
-            { !submitted &&
+            {   !submitted && !terminalError &&
                 <div className="container">
                     {
                         serverError &&
@@ -215,11 +223,19 @@ function LinkAdd() {
                 </div>
             }
             {
-                submitted &&
+                submitted && !terminalError &&
                 <div className="container">
                     <h1><i className="fas fa-check text-danger" /></h1>
                     <h1>The link has been added!</h1>
                     <a className={"btn btn-danger mt-5"} href={`/courses/${course}`} role="button">{`Go Back to ${courseDetails?.faculty}/${courseDetails?.subject} ${courseDetails?.number} ${courseDetails?.credits}`}</a>
+                </div>
+            }
+            {
+                terminalError &&
+                <div className="container">
+                    <div className="alert alert-danger" role="alert">
+                        Error: {terminalError}
+                    </div>
                 </div>
             }
         </div>
