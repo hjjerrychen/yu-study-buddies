@@ -8,7 +8,8 @@ function Footer() {
                 <div className="container">
                     <nav className="nav">
                         <a className="nav-link text-white" href="/">Home</a>
-                        <a className="nav-link text-white" href="https://github.com/jerry70450/yu-study-buddies">GitHub</a>
+                        <a className="nav-link text-white" target="_blank" href="https://github.com/jerry70450/yu-study-buddies">GitHub</a>
+                        <a className="nav-link text-white" target="_blank" href="https://www.buymeacoffee.com/yustudybuddies">Donate</a>
                     </nav>
                 </div>
 
