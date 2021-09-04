@@ -7,9 +7,17 @@ import re
 
 # https://w2prod.sis.yorku.ca/Apps/WebObjects/cdm under "View Active Course Timetables" on the right sidebar
 URLS = [
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/SU2020UG.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/SU2020GS.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/SU2020SB.html",
+    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2021AP.html",
+    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2021ED.html",
+    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2021EU.html",
+    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2021FA.html",
+    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2021GL.html",
+    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2021GS.html",
+    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2021HH.html",
+    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2021LE.html",
+    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2021LW.html",
+    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2021SB.html",
+    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2021SC.html",
 ]
 
 courses = []
@@ -178,7 +186,7 @@ for course in list(courses):
         for offering in list(section["offering"]):
             if "Cancelled" in offering["catalogueCode"] or "Backup" in offering["notes"]:
                 section["offering"].remove(offering)
-        if not section["offering"] or section["term"] == "F":
+        if not section["offering"]: # or section["term"] == "F":
             course["section"].remove(section)
     if not course["section"]:
         courses.remove(course)
@@ -200,7 +208,7 @@ for course in courses:
     unique_courses[course['faculty'] + course['subject'] + course['number'] + course['credits']]["sections"].sort()
 
 
-
+# Removes all Fall courses
 # for key, course in list(unique_courses.items()):
 #     for section in list(course["sections"]):
 #         if re.search("\(F\)$", section):
@@ -210,6 +218,7 @@ for course in courses:
     #     unique_courses.pop(key)
         
 
+# There may be issues with french characters that need manual replacement
 f=open("courses.txt","w")
 f.write(json.dumps(list(unique_courses.values())))
 f.close()
