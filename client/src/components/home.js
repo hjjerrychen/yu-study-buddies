@@ -31,7 +31,7 @@ function Home() {
     return (
         <div className="container top-spacing nav-offset" >
             <h1 id="welcome-text" className="text-white">Find group chats. Connect with classmates. Ace your courses.</h1>
-            <h6 className="text-white">Update for Fall/Winter 21-22 is coming soon!</h6>
+            <h6 className="text-white">Now updated for Fall/Winter 21-22!</h6>
             <input type="text" className="form-control form-control-lg rounded-0" placeholder="Search for courses by code or name" value={searchText} onChange={async (e) => {
                 setSearchText(e.target.value)
                 await axios.get(`${process.env.REACT_APP_SERVER || "http://localhost:8080"}/courses?l=5&q=${searchText}`)

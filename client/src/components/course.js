@@ -166,18 +166,18 @@ function Course() {
                             </div>
                             <div className="col-lg-3 col-md-4 col-sm-6 justify-content-end align-items-center align-self-center">
                                 <div className="">
-                                    {/* <div className="mb-3"> */}
+                                    <div className="mb-3">
                                         <a className="btn-block btn btn-outline-light min-content" href={`${course}/sections/add`} role="button">Add Section</a>
-                                    {/* </div> */}
-                                    {/* <div>
+                                    </div>
+                                    <div>
                                         <a className="btn-block btn btn-outline-light min-content"
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            href={`https://w2prod.sis.yorku.ca/Apps/WebObjects/cdm.woa/wa/crsq?fa=${courseDetails.faculty}&sj=${courseDetails.subject}&cn=${courseDetails.number}&cr=${courseDetails.credits}&ay=2020&ss=FW`}
+                                            href={`https://w2prod.sis.yorku.ca/Apps/WebObjects/cdm.woa/wa/crsq?fa=${courseDetails.faculty}&sj=${courseDetails.subject}&cn=${courseDetails.number}&cr=${courseDetails.credits}&ay=2021&ss=FW`}
                                             role="button">
                                             View Course on REM <i className="fas fa-external-link-alt"></i>
                                         </a>
-                                    </div> */}
+                                    </div>
                                 </div>
                             </div>
                         </div>
