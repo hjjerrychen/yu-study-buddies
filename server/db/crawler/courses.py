@@ -218,7 +218,6 @@ for course in courses:
     #     unique_courses.pop(key)
         
 
-# There may be issues with french characters that need manual replacement
 f=open("courses.txt","w")
 f.write(json.dumps(list(unique_courses.values())))
 f.close()
