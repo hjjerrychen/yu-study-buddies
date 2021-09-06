@@ -143,7 +143,7 @@ function Course() {
                             <div className="col-12 pb-3">
                                 <div className="card" >
                                     <div className="card-body">
-                                        <h6 className="card-text">There are no links yet! Why don't you add one?</h6>
+                                        <h6 className="card-text">There are no links yet! Why don't you make one?</h6>
                                     </div>
                                 </div>
                             </div>
