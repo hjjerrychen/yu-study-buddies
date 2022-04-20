@@ -25,33 +25,19 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
 db.once('open', async () => {
-    await Course.deleteMany();
-    await Report.deleteMany();
-
-    link1 = new Link({ type: "Discord", url: "https://discord.com/" });
-    link2 = new Link({ type: "WhatsApp", url: "https://www.whatsapp.com/" });
-    link3 = new Link({ type: "Facebook Messenger", url: "https://www.messenger.com/" });
-    link4 = new Link({ type: "Something Else", url: "https://www.somethingelse.com" });
-    section = new Section({ name: "A", links: [link1, link2, link3, link4] });
-    section2 = new Section({ name: "B", links: [link1, link2, link3, link4] });
-
-
-    Course.create({ name: "Introduction to Net-centric Computing", subject: "EECS", number: "1012", faculty: "LE", credits: "3.00", sections: [section, section2] }, (err, small) => {
-        if (err) console.error(err);
-    });
-    Course.create({ name: "Programming for Mobile Computing", subject: "EECS", number: "1022", faculty: "LE", credits: "3.00", sections: section }, (err, small) => {
-        if (err) console.error(err);
-    });
-    Course.create({ name: "Introduction to the Theory of Computation", subject: "EECS", number: "2001", faculty: "LE", credits: "3.00", sections: section }, (err, small) => {
-        if (err) console.error(err);
-    });
-    Course.create({ name: "Computer Organization", subject: "EECS", number: "2021", faculty: "LE", credits: "3.00", }, (err, small) => {
-        if (err) console.error(err);
-    });
-    await Course.create({ name: "Advanced Object Oriented Programming", subject: "EECS", number: "2030", faculty: "LE", credits: "3.00", sections: section }, (err, small) => {
-        if (err) console.error(err);
-    });
-
+    // for (const course of await Course.find()) {
+    //     course.
+    //     // for (const section of course.sections) {
+    //     //     await section.links.update(
+    //     //         {},
+    //     //         { $pull: { link: { url: "https://discord.gg/QN24TRp98D" }} },
+    //     //         { multi: true }
+    //     //     ).exec();
+    //     // }
+    // }
+    await Course.update({},
+        { $pull: { "sections.$.links":  { "url": "https://discord.gg/QN24TRp98D" }  } },
+        { multi: true }).exec()
     console.log("Completed!")
 });
 

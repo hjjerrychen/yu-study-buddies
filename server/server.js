@@ -322,5 +322,30 @@ app.post("/report", reportLimiter, async (req, res) => {
     }
 });
 
+
+app.get("/courses/:code/sections/:section/link/:link/delete", async (req, res) => {
+    const code = req.params.code.trim().toUpperCase();
+    const section = req.params.section;
+    const link = req.params.section;
+    try {
+        if (!(code && section && link)) {
+            return res.status(BAD_REQUEST).json({ error: "Bad request. Check parameters." })
+        }
+        const link = new Link({ ...req.body, createdAt: new Date(), updatedAt: new Date() })
+        let course = await Course.findOne({ code: code, "sections.name": section, "sections.links.url": req.body.url }).exec();
+        if (course) {
+            return res.status(CONFLICT).json({ error: "Link already exists." })
+        }
+        course = await Course.findOneAndUpdate({ code: code, "sections.name": section }, { $push: { "sections.$.links": link } }).exec();
+        if (!course) {
+            return res.status(NOT_FOUND).json({ error: "Course or section not found." })
+        }
+        res.status(CREATED).json(req.body);
+    }
+    catch (err) {
+        errorHandler(res, err);
+    }
+});
+
 // start application
 app.listen(PORT, () => console.log(`Server is running at: http://localhost:${PORT}/`));
