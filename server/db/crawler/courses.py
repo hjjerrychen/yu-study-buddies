@@ -1,23 +1,15 @@
 from bs4 import BeautifulSoup
 import requests
 from time import sleep
-import pymongo
 import json
 import re
 
 # https://w2prod.sis.yorku.ca/Apps/WebObjects/cdm under "View Active Course Timetables" on the right sidebar
 URLS = [
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2021AP.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2021ED.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2021EU.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2021FA.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2021GL.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2021GS.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2021HH.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2021LE.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2021LW.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2021SB.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2021SC.html",
+    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/SU2021UG.html",
+    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/SU2021GS.html",
+    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/SU2021LW.html",
+    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/SU2021SB.html",
 ]
 
 courses = []
