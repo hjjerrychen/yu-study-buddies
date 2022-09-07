@@ -6,10 +6,16 @@ import re
 
 # https://w2prod.sis.yorku.ca/Apps/WebObjects/cdm under "View Active Course Timetables" on the right sidebar
 URLS = [
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/SU2021UG.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/SU2021GS.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/SU2021LW.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/SU2021SB.html",
+    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2022AP.html",
+    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2022ED.html",
+    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2022EU.html",
+    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2022FA.html",
+    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2022GL.html",
+    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2022GS.html",
+    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2022HH.html",
+    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2022LE.html",
+    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2022SB.html",
+    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2022SC.html"
 ]
 
 courses = []
@@ -210,7 +216,7 @@ for course in courses:
     #     unique_courses.pop(key)
         
 
-f=open("courses.txt","w")
+f=open("courses.json","w")
 f.write(json.dumps(list(unique_courses.values())))
 f.close()
 print("finished")

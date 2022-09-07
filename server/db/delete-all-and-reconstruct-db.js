@@ -42,6 +42,6 @@ db.once('open', async () => {
         });
     }
 
-    console.log("Completed!")
+    console.log("Completed! (but not really.... monitor DB to make sure all documents load before Ctrl + C)")
 });
 
