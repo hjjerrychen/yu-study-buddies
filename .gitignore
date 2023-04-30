@@ -3,3 +3,5 @@ package
 .env
 app.yaml
 courses.json
+.DS_Store
+.venv

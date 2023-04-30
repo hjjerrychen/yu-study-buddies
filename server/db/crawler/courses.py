@@ -6,16 +6,10 @@ import re
 
 # https://w2prod.sis.yorku.ca/Apps/WebObjects/cdm under "View Active Course Timetables" on the right sidebar
 URLS = [
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2022AP.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2022ED.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2022EU.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2022FA.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2022GL.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2022GS.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2022HH.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2022LE.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2022SB.html",
-    "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/FW2022SC.html"
+   "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/SU2022UG.html",
+   "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/SU2022GS.html",
+   "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/SU2022LW.html",
+   "https://apps1.sis.yorku.ca/WebObjects/cdm.woa/Contents/WebServerResources/SU2022SB.html"
 ]
 
 courses = []
