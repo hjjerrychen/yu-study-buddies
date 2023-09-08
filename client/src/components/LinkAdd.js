@@ -119,8 +119,18 @@ function LinkAdd() {
             if (e.response?.status === 400) {
                 setServerError("Bad request.");
             }
+            else if (e.response?.status === 422) {
+                setServerError("Invalid username! Try again later.")
+            }
             else if (e.response?.status === 429) {
-                setServerError("That's too many requests! Try again later.")
+
+                let resetAfter = e.response?.headers?.["x-ratelimit-reset"];
+                let resetInSeconds = Math.ceil(
+                    Math.max(0, resetAfter - (Date.now() / 1000))
+                );
+
+                let seconds = resetInSeconds + (resetInSeconds !== 1 ? ' seconds' : ' second');
+                setServerError(`That's too many requests! Try again in ${seconds}.`);
             }
             else {
                 setServerError("Things aren't working right now. Please try again later.")

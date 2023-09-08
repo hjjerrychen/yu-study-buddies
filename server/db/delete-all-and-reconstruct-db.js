@@ -11,7 +11,8 @@ const Report = require("./models/report")["report"]
 // import data for importing
 const COURSES = require("./data")
 
-console.log(process.env.MONGO_DB_URI)
+console.log(process.env.MONGO_DB_URI);
+
 // connect to database
 mongoose
     .connect(process.env.MONGO_DB_URI, {
@@ -38,7 +39,15 @@ db.once('open', async () => {
             sections.push(new Section({ name: section }))
         }
         // console.log(`${course.faculty}/${course.subject} ${course.number} ${course.credits}: ${course.name}`)
-        await Course.create({ name: course.name, subject: course.subject, number: course.number, faculty: course.faculty, credits: course.credits, sections: sections }, (err, small) => {
+        await Course.create(
+            {
+                name: course.name,
+                subject: course.subject,
+                number: course.number,
+                faculty: course.faculty,
+                credits: course.credits,
+                sections: sections
+            }, (err, small) => {
             if (err) console.error(err);
         });
     }

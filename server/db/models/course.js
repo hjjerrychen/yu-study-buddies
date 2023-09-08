@@ -19,11 +19,10 @@ let link = new mongoose.Schema({
     },
     owner: {
         type: String,
-        unique: false,
+        required: true,
+        trim: true,
         minlength: 1,
-        maxlength: 20,
-        required: false,
-        trim: true
+        maxlength: 50
     },
 }, { timestamps: true })
 

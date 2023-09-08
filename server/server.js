@@ -7,54 +7,68 @@ const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const { json } = require("body-parser");
 const fetch = require('node-fetch');
 const rateLimit = require("express-rate-limit");
-const {sendEmail} = require("./mod/email");
-const NodeCache = require( "node-cache" );
+const {Verifier} = require("./mod/verifier");
+
+function limiterHandler(request, response, next) {
+    // Parity with default
+    response
+        .status(429)
+        .header("Access-Control-Expose-Headers", "X-RateLimit-Reset")
+        .json({error: "Rate limit reached. Sorry blud."});
+}
 
 // limiters
 const newCourseLimiter = rateLimit({
     windowMs: 24 * 60 * 60 * 1000, // 24 hours
-    max: 10
+    max: 10,
+    handler: limiterHandler
   });
 
 const newLinkLimiter = rateLimit({
-windowMs: 60 * 1000, // 1 minute
-max: 30
+    windowMs: 60 * 1000, // 1 minute
+    max: 30,
+    handler: limiterHandler
 });
 
 const newSectionLimiter = rateLimit({
-windowMs: 24 * 60 * 60 * 1000, // 24 hours
-max: 10
+    windowMs: 24 * 60 * 60 * 1000, // 24 hours
+    max: 10,
+    handler: limiterHandler
 });
 
 const courseSearchLimiter = rateLimit({
-windowMs: 1000, // 1 second
-  max: 100,
+    windowMs: 1000, // 1 second
+    max: 100,
+    handler: limiterHandler
 });
 
 const courseInfoLimiter = rateLimit({
-windowMs: 1000, // 1 second
-max: 20
+    windowMs: 1000, // 1 second
+    max: 20,
+    handler: limiterHandler
 });
 
 const reportLimiter = rateLimit({
-windowMs: 60 * 1000, // 1 minute
-max: 1
+    windowMs: 60 * 1000, // 1 minute
+    max: 1,
+    handler: limiterHandler
 });
 
 const verifyLimiter = rateLimit({
-  windowMs: 60 * 1000, // 1 minute
-  max: 1
+    windowMs: 60 * 1000, // 1 minute
+    max: 1,
+    handler: limiterHandler
 });
+
 
 const verifySpamLimiter = rateLimit({
     windowMs: 10 * 1000, // 1 minute
     keyGenerator: (req, res) => "ALL",
-    max: 5
+    max: 5,
+    handler: limiterHandler
 });
-
 
 // constants
 const PORT = process.env.PORT || 8080;
@@ -67,6 +81,7 @@ const GONE = 410;
 const NOT_FOUND = 404;
 const CONFLICT = 409;
 const SERVER_ERROR = 500;
+const UNPROCESSABLE = 422;
 
 // import model schema
 const Course = require("./db/models/course")["course"]
@@ -106,33 +121,8 @@ const verifyReCaptcha = async (token) => {
     )).json()).success
 }
 
-// VERIFICATION
-
-app.verifyCache = new NodeCache({stdTTL: 60 * 5, checkperiod: 30});
-
-function setCode(username, code) {
-    app.verifyCache.set(username, code, undefined);
-}
-
-function genCode() {
-    return Math.floor(100000 + Math.random() * 900000)
-}
-
-function matchCode(username, matchedCode) {
-    let userCode = app.verifyCache.get(username);
-
-    if (userCode === parseInt(matchedCode)) {
-        app.verifyCache.del(username);
-        return true;
-    }
-
-    return false;
-}
-
-
-function hasCode(username) {
-    return Boolean(app.verifyCache.get(username));
-}
+// Set up verification client
+app.verifier = new Verifier();
 
 // ROUTES
 
@@ -323,15 +313,16 @@ app.post("/courses/:code/sections/:section/link", newLinkLimiter, async (req, re
             return res.status(BAD_REQUEST).json({ error: "Bad request. Check parameters." })
         }
 
-        if (!hasCode(username)) {
+        if (!this.verifier.hasCode(username)) {
             return res.status(GONE).json({ error: "Email code expired. Refresh the page." });
         }
 
-        if (!matchCode(username, req.body.code || 0)) {
+        if (!this.verifier.checkCode(username, req.body.code || 0)) {
             return res.status(UNAUTHORIZED).json({ error: "Email code does not match records. Unauthorized!" });
         }
 
-        const link = new Link({ ...req.body, createdAt: new Date(), updatedAt: new Date(), owner: username})
+        req.body.owner = req.body.username;
+        const link = new Link({ ...req.body, createdAt: new Date(), updatedAt: new Date()});
 
         let course = await Course.findOne({ code: code, "sections.name": section, "sections.links.url": req.body.url }).exec();
 
@@ -361,12 +352,25 @@ app.post("/verify/create", verifyLimiter, verifySpamLimiter, async (req, res) =>
             return res.status(BAD_REQUEST).json({ error: "Bad request. Check parameters." })
         }
 
-        let code = genCode();
-        setCode(req.body.username, code);
+        let username = req.body.username.replaceAll("@", "");
+        let codeTime = app.verifier.checkCodeTime(username);
 
-        let result = await sendEmail(`${req.body.username}@my.yorku.ca`, code);
+        if (codeTime && codeTime < 15) {
+            return res.status(CREATED).json(req.body);
+        }
 
-        if (!result) {
+        let newCode = app.verifier.createCode(username);
+
+        let sendResult = await app.verifier.sendCode(
+            username,
+            newCode
+        )
+
+        if (sendResult?.statusCode === 422) {
+            return res.status(UNPROCESSABLE).json({error: "Invalid e-mail."})
+        }
+
+        if (sendResult?.statusCode !== 202) {
             return res.status(SERVER_ERROR).json({error: "Failed to send e-mail. Contact project developer(s)."})
         }
 
