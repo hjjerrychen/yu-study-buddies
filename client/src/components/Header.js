@@ -199,8 +199,8 @@ const Header = ({navs}) => {
                                 Forked from&nbsp;
                                 <LinkURL target={"_blank"} href={"https://github.com/hjjerrychen/yu-study-buddies"}>Jerry Chen</LinkURL>
                             </Text2>
-                            <LinkURL target={"_blank"} href={"https://www.isaackogan.com/linkedin"}>
-                                by Isaac Kogan
+                            <LinkURL target={"_blank"} href={"https://yorku.dev/"}>
+                                by SSADC @ York
                                 <LogoutButtonIcon src={"/icons/link.svg"} />
                             </LinkURL>
                         </FlexCenterColumn>
