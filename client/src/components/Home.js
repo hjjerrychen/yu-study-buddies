@@ -24,6 +24,10 @@ const Page = styled.div`
 
 
 const Input = styled.input`
+    
+    @media(max-width: 500px) {
+      font-size: 15px;
+    }
 `;
 
 const Tagline = styled.span`
@@ -31,6 +35,16 @@ const Tagline = styled.span`
   font-weight: bold;
   color: #3d3d3d;
   flex-direction: column;
+`;
+
+const TaglineSpan = styled.span`
+    font-size: 30px;
+    margin-bottom: 15px;
+  
+    @media(max-width: 500px) {
+      font-size: 20px;
+    }
+  
 `;
 
 
@@ -54,7 +68,7 @@ export function Home() {
            <Container className="container nav-offset" >
                <Hero />
                <Tagline>
-                   <span style={{fontSize: "30px", marginBottom: "15px"}}>Find group chats. Connect with classmates. Ace your courses.</span>
+                   <TaglineSpan >Find group chats. Connect with classmates. Ace your courses.</TaglineSpan>
                    <Input type="text" className="form-control form-control-lg rounded-0" placeholder="Search courses by code or name" value={searchText} onChange={async (e) => {
 
                        setSearchText(e.target.value);

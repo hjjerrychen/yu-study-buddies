@@ -7,7 +7,26 @@ import ReCAPTCHA from "react-google-recaptcha";
 import ReactGA from 'react-ga';
 import Header from "./Header";
 import {Container} from "./Home";
+import {styled} from "styled-components";
 
+const H1 = styled.h1`
+    @media(max-width: 500px) {
+      font-size: 30px;      
+    }
+`;
+
+const P = styled.p`
+  @media(max-width: 500px) {
+    font-size: 19px;
+  }
+`;
+
+const WhyRequestThis = styled.small`
+  @media(max-width: 500px) {
+    display: block;
+    margin-bottom: 10px;
+  }
+`;
 function LinkAdd() {
     const reRef = useRef();
 
@@ -161,8 +180,8 @@ function LinkAdd() {
                     <div className="d-flex justify-content-between">
                         {!terminalError &&
                             <div>
-                                <h1>Add a Link</h1>
-                                <p className="lead mb-0">{courseDetails.faculty}/{courseDetails.subject} {courseDetails.number} {courseDetails.credits} (Section {section}) </p>
+                                <H1>Add a Link</H1>
+                                <P className="lead mb-0">{courseDetails.faculty}/{courseDetails.subject} {courseDetails.number} {courseDetails.credits} (Section {section}) </P>
                             </div>
                         }
                     </div>
@@ -289,9 +308,9 @@ function LinkAdd() {
                             </div>
                             <div className="form-group">
                                 <label className="mr-3">Passport York Username</label>
-                                <small className="link-black" onClick={() => setUsernameWhyModal(true)}>
+                                <WhyRequestThis className="link-black" onClick={() => setUsernameWhyModal(true)}>
                                     <i className="fas fa-question-circle" /> Why do we request this?
-                                </small>
+                                </WhyRequestThis>
                                 <input
                                     type="text"
                                     className={classNames({

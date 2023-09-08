@@ -7,7 +7,19 @@ import ReactGA from 'react-ga';
 import classNames from 'classnames';
 import ReCAPTCHA from "react-google-recaptcha";
 import {Container} from "./Home";
+import styled from "styled-components";
 
+const H1 = styled.h1`
+    @media(max-width: 500px) {
+      font-size: 30px;      
+    }
+`;
+
+const P = styled.p`
+  @media(max-width: 500px) {
+    font-size: 19px;
+  }
+`;
 
 function Course() {
     const reRef = useRef();
@@ -160,19 +172,10 @@ function Course() {
         <div>
             <Header />
             <Container>
-                {!serverError &&
-                    <div className="justify-content-between row">
-                        <div className="col-sm-6 sm-mb" >
-                            <h1>{courseDetails.faculty}/{courseDetails.subject} {courseDetails.number} {courseDetails.credits}</h1>
-                            <p className="lead mb-0">{courseDetails.name}</p>
-                        </div>
-                        <div className="col-lg-3 col-md-4 col-sm-6 justify-content-end align-items-center align-self-center">
-                            <div className="">
-                                <div className="mb-3">
-                                    <a className="btn-block btn btn-outline-light min-content" href={`${course}/sections/add`} role="button">Add Section</a>
-                                </div>
-                            </div>
-                        </div>
+                {!serverError && courseDetails &&
+                    <div className="sm-mb">
+                        <H1>{courseDetails.faculty}/{courseDetails.subject} {courseDetails.number} {courseDetails.credits}</H1>
+                        <P className="lead mb-0">{courseDetails.name}</P>
                     </div>
                 }
             </Container>
