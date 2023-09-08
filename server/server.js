@@ -57,7 +57,7 @@ const verifySpamLimiter = rateLimit({
 
 
 // constants
-const PORT = 8080;
+const PORT = process.env.port || 8080;
 
 //http response codes
 const CREATED = 201;
