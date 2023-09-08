@@ -17,6 +17,14 @@ let link = new mongoose.Schema({
             message: props => "The URL is not valid!"
         }
     },
+    owner: {
+        type: String,
+        unique: false,
+        minlength: 1,
+        maxlength: 20,
+        required: false,
+        trim: true
+    },
 }, { timestamps: true })
 
 let section = new mongoose.Schema({
