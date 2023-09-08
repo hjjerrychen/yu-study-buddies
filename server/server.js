@@ -313,11 +313,11 @@ app.post("/courses/:code/sections/:section/link", newLinkLimiter, async (req, re
             return res.status(BAD_REQUEST).json({ error: "Bad request. Check parameters." })
         }
 
-        if (!this.verifier.hasCode(username)) {
+        if (!app.verifier.hasCode(username)) {
             return res.status(GONE).json({ error: "Email code expired. Refresh the page." });
         }
 
-        if (!this.verifier.checkCode(username, req.body.code || 0)) {
+        if (!app.verifier.checkCode(username, req.body.code || 0)) {
             return res.status(UNAUTHORIZED).json({ error: "Email code does not match records. Unauthorized!" });
         }
 
