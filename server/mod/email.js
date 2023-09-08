@@ -1,43 +1,49 @@
-const Email = require('aws-sdk');
-Email.config.update({region: process.env.AWS_REGION});
+const { MailerSend, EmailParams, Sender, Recipient } = require("mailersend");
 
-function buildEmail(sendAddress, verificationCode) {
-    return {
-        Destination: {
-            ToAddresses: [sendAddress]
-        },
-        Message: {
-            Body: {
-                Text: {
-                    Charset: "UTF-8",
-                    Data: `Your verification code is: ${verificationCode}.`
-                }
-            },
-            Subject: {
-                Charset: 'UTF-8',
-                Data: 'Study Buddies: Verification Code'
-            }
-        },
-        Source: 'Study Buddies <verify@yorku.dev>'
+
+class EmailClient {
+
+    #apiKey = process.env.MAILER_SEND_TOKEN;
+
+    #mailerSend;
+    #sentFrom;
+
+    constructor() {
+
+        this.#mailerSend = new MailerSend({apiKey: this.#apiKey});
+        this.#sentFrom = new Sender("verify@yorku.dev", "Study Buddies");
+
     }
-}
 
+    #getRecipients(...emailAddresses) {
+        const recipients = [];
 
-async function sendEmail(sendAddress, verificationCode) {
-    try {
-        await (
-            new Email.SES()
-                .sendEmail(buildEmail(sendAddress, verificationCode))
-                .promise()
-        );
-        return true;
-    } catch (ex) {
-        console.log(ex.stack)
-        return false;
+        for (let address of emailAddresses) {
+            recipients.push(
+                new Recipient(address, address)
+            )
+        }
+
+        return recipients;
+    }
+
+    async sendEmail(subject, html, ...emailAddresses) {
+
+        const params = new EmailParams()
+            .setFrom(this.#sentFrom)
+            .setTo(this.#getRecipients(...emailAddresses))
+            .setSubject(subject)
+            .setHtml(html);
+
+        try {
+            return await this.#mailerSend.email.send(params);
+        } catch (ex) {
+            return ex;
+        }
     }
 
 }
 
 module.exports = {
-    sendEmail
+    MailClient: EmailClient
 }
