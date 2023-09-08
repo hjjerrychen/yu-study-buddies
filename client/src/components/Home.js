@@ -31,7 +31,6 @@ const Tagline = styled.span`
   font-weight: bold;
   color: #3d3d3d;
   flex-direction: column;
-  margin-bottom: 30px;
 `;
 
 

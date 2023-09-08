@@ -131,6 +131,7 @@ function LinkAdd() {
                 setServerError("Bad request.")
             }
             else if (e.response?.status === 410) {
+                setInfoMessage("");
                 setServerError("The requested code is expired. Please refresh the page.");
                 setExpiredCode(true);
             }
@@ -322,8 +323,13 @@ function LinkAdd() {
                                         onChange={(e) => {
                                             setVerifyCode(e.target.value)
                                         }}
+                                        disabled={expiredCode}
                                         placeholder={123456} />
-                                    <div className="invalid-feedback">The code you entered was incorrect, try again.</div>
+                                    <div className="invalid-feedback">
+                                        {expiredCode ?
+                                            "Your code is expired. Refresh the page."
+                                            : "The code you entered was incorrect, try again."}
+                                    </div>
                                 </div>
                             }
                             <div className="form-group" >
