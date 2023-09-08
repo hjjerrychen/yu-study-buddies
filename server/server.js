@@ -64,9 +64,9 @@ const verifyLimiter = rateLimit({
 
 
 const verifySpamLimiter = rateLimit({
-    windowMs: 10 * 1000, // 1 minute
+    windowMs: 60 * 60 * 24 * 1000, // 1 day
     keyGenerator: (req, res) => "ALL",
-    max: 5,
+    max: 300,
     handler: limiterHandler
 });
 
