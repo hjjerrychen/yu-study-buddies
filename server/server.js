@@ -321,9 +321,7 @@ app.post("/courses/:code/sections/:section/link", newLinkLimiter, async (req, re
             return res.status(UNAUTHORIZED).json({ error: "Email code does not match records. Unauthorized!" });
         }
 
-        req.body.owner = req.body.username;
         const link = new Link({ ...req.body, createdAt: new Date(), updatedAt: new Date()});
-
         let course = await Course.findOne({ code: code, "sections.name": section, "sections.links.url": req.body.url }).exec();
 
         if (course) {

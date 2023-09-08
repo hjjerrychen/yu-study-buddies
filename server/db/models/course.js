@@ -8,6 +8,13 @@ let link = new mongoose.Schema({
         maxlength: 50,
         trim: true
     },
+    username: {
+        type: String,
+        required: true,
+        minlength: 1,
+        maxlength: 50,
+        trim: true,
+    },
     url: {
         type: String,
         required: true,
@@ -16,13 +23,6 @@ let link = new mongoose.Schema({
             validator: (v) => /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/.test(v),
             message: props => "The URL is not valid!"
         }
-    },
-    owner: {
-        type: String,
-        required: true,
-        trim: true,
-        minlength: 1,
-        maxlength: 50
     },
 }, { timestamps: true })
 
