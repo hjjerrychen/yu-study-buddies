@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-
+import Header from "./Header"
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from 'axios';
 import ReactGA from 'react-ga';
 import classNames from 'classnames';
 import ReCAPTCHA from "react-google-recaptcha";
+import {Container} from "./Home";
+
 
 function Course() {
     const reRef = useRef();
@@ -103,8 +105,8 @@ function Course() {
     }
 
     const sections = courseDetails && courseDetails.sections.map((section) =>
-        <div key={section.name} className="mt-3">
-            <div className="container-fluid">
+        <div key={section.name}>
+            <div>
                 <div className="d-flex justify-content-between row ">
                     <div className="col-sm-6">
                         <h2>{"Section " + section.name}</h2>
@@ -114,7 +116,7 @@ function Course() {
                     </div>
                 </div>
             </div>
-            <div className="container-fluid">
+            <div>
                 <div className="row flex-row">
                     {
                         section.links.map((link) =>
@@ -155,36 +157,26 @@ function Course() {
     );
 
     return (
-        <div className="nav-offset">
-            <div className="jumbotron jumbotron-fluid">
-                <div className="container">
-                    {!serverError &&
-                        <div className="justify-content-between row">
-                            <div className="col-sm-6 sm-mb" >
-                                <h1>{courseDetails.faculty}/{courseDetails.subject} {courseDetails.number} {courseDetails.credits}</h1>
-                                <p className="lead mb-0">{courseDetails.name}</p>
-                            </div>
-                            <div className="col-lg-3 col-md-4 col-sm-6 justify-content-end align-items-center align-self-center">
-                                <div className="">
-                                    <div className="mb-3">
-                                        <a className="btn-block btn btn-outline-light min-content" href={`${course}/sections/add`} role="button">Add Section</a>
-                                    </div>
-                                    {/* <div>
-                                        <a className="btn-block btn btn-outline-light min-content"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            href={`https://w2prod.sis.yorku.ca/Apps/WebObjects/cdm.woa/wa/crsq?fa=${courseDetails.faculty}&sj=${courseDetails.subject}&cn=${courseDetails.number}&cr=${courseDetails.credits}&ay=2022&ss=FW`}
-                                            role="button">
-                                            View Course on REM <i className="fas fa-external-link-alt"></i>
-                                        </a>
-                                    </div> */}
+        <div>
+            <Header />
+            <Container>
+                {!serverError &&
+                    <div className="justify-content-between row">
+                        <div className="col-sm-6 sm-mb" >
+                            <h1>{courseDetails.faculty}/{courseDetails.subject} {courseDetails.number} {courseDetails.credits}</h1>
+                            <p className="lead mb-0">{courseDetails.name}</p>
+                        </div>
+                        <div className="col-lg-3 col-md-4 col-sm-6 justify-content-end align-items-center align-self-center">
+                            <div className="">
+                                <div className="mb-3">
+                                    <a className="btn-block btn btn-outline-light min-content" href={`${course}/sections/add`} role="button">Add Section</a>
                                 </div>
                             </div>
                         </div>
-                    }
-                </div>
-            </div>
-            <div className="container">
+                    </div>
+                }
+            </Container>
+            <Container style={{paddingBottom: "15px"}}>
                 {
                     linkToReport !== "" &&
                     <div>
@@ -239,7 +231,7 @@ function Course() {
                                                         <option value="Zoom or online lecture link.">Zoom or online lecture link.</option>
                                                     </select>
                                                     <div className="invalid-feedback">Please select a reason.</div>
-                                                    <ReCAPTCHA sitekey="6LdgVNYZAAAAAPBMSaqI_px7PyL1As_XkTmLAXVa" size="invisible" ref={reRef} />
+                                                    <ReCAPTCHA sitekey="6LdeTwooAAAAAAp4ooizHD_M4aSG0zq68NcvU5Lo" size="invisible" ref={reRef} />
                                                 </div>
                                             </div>
                                         }
@@ -270,7 +262,7 @@ function Course() {
                     </div>
                 }
                 {courseDetails && sections}
-            </div>
+            </Container>
         </div>
     );
 }

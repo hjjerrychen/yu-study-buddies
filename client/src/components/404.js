@@ -1,18 +1,37 @@
 import React from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
+import Header from "./Header";
+import {Container} from "./Home";
+import {styled} from "styled-components";
+
+
+const Page = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
+
+
+const Content = styled.div`
+  height: 100%;
+  display: flex;
+  align-items: center;
+  
+`;
+
 
 function LinkAdd() {
 
     return (
-        <div className="top-spacing">
-            <div className="jumbotron jumbotron-fluid">
-                <div className="container">
+        <Page>
+            <Header />
+            <Content>
+                <Container style={{height: "fit-content"}}>
                     <h1 className="display-3">404 - Not Found</h1>
-                    <h1 >Whoops! We can't find what you're looking for!</h1>
-                    <a className="btn btn-outline-light btn-lg mt-3" href="/" role="button">Go Home</a>
-                </div>
-            </div>
-        </div>
+                    <a className="btn btn-danger btn-lg mt-3" href="/" role="button">Go Home</a>
+                </Container>
+            </Content>
+        </Page>
     );
 }
 
