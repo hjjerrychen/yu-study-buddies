@@ -32,6 +32,7 @@ async function sendEmail(sendAddress, verificationCode) {
         );
         return true;
     } catch (ex) {
+        console.log(ex.stack)
         return false;
     }
 
