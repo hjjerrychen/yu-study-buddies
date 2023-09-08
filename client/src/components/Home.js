@@ -17,7 +17,6 @@ export const Container = styled.div`
 `;
 
 const Page = styled.div`
-  height: 100svh;
   display: flex;
   flex-direction: column;
 `;
