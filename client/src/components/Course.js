@@ -6,7 +6,7 @@ import axios from 'axios';
 import ReactGA from 'react-ga';
 import classNames from 'classnames';
 import ReCAPTCHA from "react-google-recaptcha";
-import {Container} from "./Home";
+import {Container, PageTitle} from "./Home";
 import styled from "styled-components";
 
 const H1 = styled.h1`
@@ -20,6 +20,7 @@ const P = styled.p`
     font-size: 19px;
   }
 `;
+
 
 function Course() {
     const reRef = useRef();
@@ -173,10 +174,10 @@ function Course() {
             <Header />
             <Container>
                 {!serverError && courseDetails &&
-                    <div className="sm-mb">
+                    <PageTitle className="sm-mb">
                         <H1>{courseDetails.faculty}/{courseDetails.subject} {courseDetails.number} {courseDetails.credits}</H1>
                         <P className="lead mb-0">{courseDetails.name}</P>
-                    </div>
+                    </PageTitle>
                 }
             </Container>
             <Container style={{paddingBottom: "15px"}}>

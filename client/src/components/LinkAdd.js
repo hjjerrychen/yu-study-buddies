@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import ReCAPTCHA from "react-google-recaptcha";
 import ReactGA from 'react-ga';
 import Header from "./Header";
-import {Container} from "./Home";
+import {Container, PageTitle} from "./Home";
 import {styled} from "styled-components";
 
 const H1 = styled.h1`
@@ -48,6 +48,7 @@ function LinkAdd() {
     const [verifyCode, setVerifyCode] = useState("");
     const [invalidCode, setInvalidCode] = useState(false);
     const [expiredCode, setExpiredCode] = useState(false);
+    const [isInRequest, setIsInRequest] = useState(false);
 
     const formValid = {
         "type": type !== "",
@@ -89,9 +90,11 @@ function LinkAdd() {
 
     const verify = async (e) => {
         e.preventDefault();
+        setIsInRequest(true);
 
         if (isVerifying) {
             await submit();
+            setIsInRequest(false);
             return;
         }
 
@@ -124,6 +127,7 @@ function LinkAdd() {
             }
         }
 
+        setIsInRequest(false);
 
     }
 
@@ -176,7 +180,7 @@ function LinkAdd() {
         <div>
             <Header />
             <Container>
-                <div>
+                <PageTitle>
                     <div className="d-flex justify-content-between">
                         {!terminalError &&
                             <div>
@@ -185,7 +189,7 @@ function LinkAdd() {
                             </div>
                         }
                     </div>
-                </div>
+                </PageTitle>
             </Container>
             <Container>
                 {   noLinkHelpModal && !terminalError &&
@@ -245,7 +249,7 @@ function LinkAdd() {
                         {
                             infoMessage &&
                             <div className="alert alert-info" role="alert">
-                                Error: {infoMessage}
+                                {infoMessage}
                             </div>
                         }
                         <form>
@@ -377,6 +381,7 @@ function LinkAdd() {
                                     (!Object.values(formValid).every(formFieldValid => formFieldValid) && !isVerifying)
                                     || (verifyCode.length !== 6 && isVerifying)
                                     || (expiredCode && isVerifying)
+                                    || isInRequest
                                 )
                             }>{isVerifying ? (expiredCode ? "Code Expired" : "Verify Code") : "Create Link"}</button>
                         </form>

@@ -32,8 +32,9 @@
   grid-template-rows: auto 1fr auto;
 }
 
-#root{
-  height: 100vh;
+#root {
+  height: 100vh; /* Fallback */
+  height: 100svh;
 }
 
 select.form-control.is-valid{

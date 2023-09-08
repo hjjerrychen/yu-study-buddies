@@ -5,6 +5,12 @@ import {styled} from "styled-components";
 import Header from "./Header";
 import Hero from "./Hero";
 
+// Only ever used on other pages but it's ok lol
+export const PageTitle = styled.div`
+  margin-bottom: -8px;
+`;
+
+
 export const Container = styled.div`
   background: white;
   width: 90%;
@@ -45,7 +51,6 @@ const TaglineSpan = styled.span`
     }
   
 `;
-
 
 export function Home() {
     const [searchText, setSearchText] = useState("");
