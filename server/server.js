@@ -139,6 +139,12 @@ app.verifier = new Verifier();
  */
 app.get("/", courseSearchLimiter, (req, res) => res.send("Server is working."))
 
+const regex = /[/\-\\^$*+?.()|[\]{}]/g;
+
+function escapeRegex(string) {
+    return string.replace(regex, '\\$&');
+}
+
 /**
  * GET  /courses/
  *
@@ -159,7 +165,9 @@ app.get("/", courseSearchLimiter, (req, res) => res.send("Server is working."))
 app.get("/courses", courseSearchLimiter,async (req, res) => {
     // return courses with course code that matches parameter q(uery) if provided
     const property = {};
-    if (req.query.q) property.$or = [{ 'name': { $regex: req.query.q, $options: 'i' } }, { 'code': { $regex: req.query.q.replace(" ", ""), $options: 'i' } }]
+
+
+    if (req.query.q) property.$or = [{ 'name': { $regex: escapeRegex(req.query.q), $options: 'i' } }, { 'code': { $regex: escapeRegex(req.query.q.replace(" ", "")), $options: 'i' } }]
     try {
         res.json(await Course.find(property, "-_id name faculty subject number credits", { limit: parseInt(req.query.l) || 0 }).exec())
     }
