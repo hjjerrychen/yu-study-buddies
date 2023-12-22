@@ -69,3 +69,23 @@ export function InfoNotification(props) {
         </Notification>
     )
 }
+
+export function StatsNotification(props) {
+
+    let color, border, background, xBackground;
+    border = color = "#bf0025";
+    background = "rgba(227,24,55,0.11)";
+    xBackground = "rgba(227,24,55,0.11)";
+
+    return (
+        <Notification style={{borderColor: border, color: color, background: background}}>
+            <NotificationContent>
+                <NotificationIcon style={{width: "25px", "height": "25px"}} src={"/icons/stats.svg"}/>
+                {props.content}
+            </NotificationContent>
+            <CloseContainer>
+                <XIcon onClick={onClick} color={xBackground} src={'/icons/x2.svg'} />
+            </CloseContainer>
+        </Notification>
+    )
+}

@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import {InfoNotification} from "./Notifications";
+import {InfoNotification, StatsNotification} from "./Notifications";
 
 const TitleIcon = styled.img`
   width: 23px;
@@ -83,16 +83,26 @@ function Onboarding() {
     )
 }
 
+function Statistics({stats}) {
+
+    const linkVerb = stats.linkCount === 1 ? "is" : "are";
+    const linkCount = stats.linkCount;
+    const linkPlurality = stats.linkCount === 1 ? "chat" : "chats";
+    const clickCount = stats.clickCount;
+    const clickPlurality = stats.clickCount === 1 ? "click" : "clicks";
+
+    return (
+        <OnboardingDiv>
+            <Span>
+                {`There ${linkVerb} currently ${linkCount} ${linkPlurality} with a total of ${clickCount} ${clickPlurality} site-wide.`}
+            </Span>
+        </OnboardingDiv>
+    )
+
+}
 
 
-const Students = styled.img`
-  width: max-content;
-  height: 250px;
-  border: 4px solid #e31837;
-  margin-top: 0px;
-`;
-
-export default function Hero() {
+export default function Hero({stats}) {
 
     return (
         <HeroContainer>
@@ -101,11 +111,12 @@ export default function Hero() {
                 <Title>Study Buddies</Title>
             </Desc>
 
-
             <div>
+                {stats && stats.linkCount && stats.clickCount && <StatsNotification content={
+                    <Statistics stats={stats}/>} />
+                }
                 <InfoNotification content={<Onboarding />} />
             </div>
-
 
         </HeroContainer>
 

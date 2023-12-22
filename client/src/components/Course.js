@@ -21,6 +21,62 @@ const P = styled.p`
   }
 `;
 
+let STATS = null;
+
+async function getStats(course) {
+
+    if (STATS == null) {
+        const axiosRes = await axios.get(`${process.env.REACT_APP_SERVER || "http://localhost:8080"}/courses/${course}/stats`);
+        STATS = axiosRes.data;
+    }
+
+    return STATS;
+
+}
+
+function getClicks(section, url) {
+
+    if (!STATS) {
+        return 0;
+    }
+
+    for (let object of STATS[section]) {
+        if (object?.url === url) {
+            return object?.clicks || 0;
+        }
+    }
+
+    return 0;
+
+}
+
+function getClickStr(section, url) {
+
+    const clicks = getClicks(section, url);
+    const plurality = clicks === 1 ? "time" : "times";
+
+    return `${clicks} ${plurality}`;
+
+}
+
+const SESSION_CLICKS = {};
+
+function onLinkClicked(course, section, link) {
+
+    if (SESSION_CLICKS[link]) {
+        return;
+    }
+
+    axios.post(
+        (process.env.REACT_APP_SERVER || "http://localhost:8080") +
+        `/courses/${course}/sections/${section}/link/${encodeURIComponent(link.url)}/click`
+    )
+        .then(() => null)
+        .catch(() => null);
+
+    SESSION_CLICKS[link] = true;
+
+}
 
 function Course() {
     const reRef = useRef();
@@ -32,9 +88,13 @@ function Course() {
     const [reportSubmitted, setReportSubmitted] = useState(false);
     const [reportError, setReportError] = useState("");
     const [serverError, setServerError] = useState("");
-
+    const [courseStats, setCourseStats] = useState("");
 
     useEffect(() => {
+        getStats(course).then(response => {
+            setCourseStats(response);
+        });
+
         const getCourseData = () => axios.get(`${process.env.REACT_APP_SERVER || "http://localhost:8080"}/courses/${course}`)
             .then(response => {
                 setCourseDetails(response.data)
@@ -137,7 +197,14 @@ function Course() {
                                 <div className="card" >
                                     <div className="card-body">
                                         <h5 className="card-title">{link.type}</h5>
-                                        <p className="card-text bg-light text-break"><small><samp><a href={link.url}>{link.url}</a></samp></small></p>
+                                        <p className="card-text bg-light text-break"><small><samp>
+                                            <a
+                                                target="_blank"
+                                                href={link.url}
+                                                onClick={() => onLinkClicked(course, section.name, link)}
+                                            >{link.url}
+                                            </a>
+                                        </samp></small></p>
                                         <p className="card-text mb-0">
                                             <small className="mr-3 link-black" onClick={() => copyToClipboard(link._id, link.url)}>{copyButtonLabels[link._id]}</small>
                                             <small className="link-black"
@@ -145,9 +212,19 @@ function Course() {
                                                 <i className="fas fa-exclamation-circle" /> Report
                                             </small>
                                         </p>
-                                        <p className="card-text "><small className="text-muted">
+                                        <p className="card-text ">
+                                            <small className="text-muted">
                                             Added on {new Date(link.updatedAt).toDateString()}
-                                        </small></p>
+                                            </small>
+                                            {
+                                                courseStats && (
+                                                    <small className="text-muted">
+                                                        , clicked {getClickStr(section.name, link.url)} in total.
+                                                    </small>
+                                                )
+
+                                            }
+                                        </p>
                                     </div>
                                 </div>
                             </div>

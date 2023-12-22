@@ -10,6 +10,7 @@ const mongoose = require("mongoose");
 const fetch = require('node-fetch');
 const rateLimit = require("express-rate-limit");
 const {Verifier} = require("./mod/verifier");
+const {getLinkCount, getCourseCount, getCourseLinkClicks, getLinkClicks} = require("./mod/stats");
 
 function limiterHandler(request, response, next) {
     // Parity with default
@@ -47,6 +48,18 @@ const courseSearchLimiter = rateLimit({
 const courseInfoLimiter = rateLimit({
     windowMs: 1000, // 1 second
     max: 20,
+    handler: limiterHandler
+});
+
+const linkClicksLimiter = rateLimit({
+    windowMs: 60 * 1000, // 1 second
+    max: 3,
+    handler: limiterHandler
+});
+
+const linkClicksLongLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 second
+    max: 10,
     handler: limiterHandler
 });
 
@@ -175,6 +188,40 @@ app.get("/courses", courseSearchLimiter,async (req, res) => {
         errorHandler(res, err);
     }
 })
+
+app.get("/stats", courseSearchLimiter, async(req, res) => {
+    try {
+        res.json({
+            linkCount: await getLinkCount(),
+            courseCount: await getCourseCount(),
+            clickCount: await getLinkClicks()
+        })
+    } catch (err) {
+        errorHandler(res, err)
+    }
+});
+
+app.get("/courses/:code/stats", newLinkLimiter, async (req, res) => {
+    const code = req.params.code.trim().toUpperCase();
+
+    try {
+
+        if (!(code)) {
+            return res.status(BAD_REQUEST).json({ error: "Bad request. Check parameters." })
+        }
+
+        const result = await getCourseLinkClicks(code);
+        if (!result) {
+            return res.status(NOT_FOUND).json({ error: "Course not found or no links found." })
+        }
+
+        res.status(CREATED).json(result);
+    }
+
+    catch (err) {
+        errorHandler(res, err);
+    }
+});
 
 /**
  * GET  /courses/:code
@@ -343,6 +390,37 @@ app.post("/courses/:code/sections/:section/link", newLinkLimiter, async (req, re
 
         res.status(CREATED).json(req.body);
     }
+    catch (err) {
+        errorHandler(res, err);
+    }
+});
+
+app.post("/courses/:code/sections/:section/link/:url/click", newLinkLimiter, async (req, res) => {
+    const urlToUpdate = req.params.url?.trim();
+    const code = req.params.code.trim().toUpperCase();
+    const section = req.params.section;
+
+    try {
+
+        if (!(urlToUpdate && code && section)) {
+            return res.status(BAD_REQUEST).json({ error: "Bad request. Check parameters." })
+        }
+
+        await Course.findOneAndUpdate(
+            {
+                "code": code,
+                "sections.name": section,
+                "sections.links.url": urlToUpdate
+            },            { $inc: { "sections.$[sec].links.$[link].clicks": 1 } }, // increment the clicks
+            {
+                arrayFilters: [{ "sec.links.url": urlToUpdate }, { "link.url": urlToUpdate }],
+                new: true
+            }
+        );
+
+        res.status(CREATED).json(req.body);
+    }
+
     catch (err) {
         errorHandler(res, err);
     }

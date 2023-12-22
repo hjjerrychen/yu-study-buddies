@@ -52,9 +52,27 @@ const TaglineSpan = styled.span`
   
 `;
 
+let STATS = null;
+
+async function getStats() {
+
+    if (STATS == null) {
+        const axiosRes = await axios.get(`${process.env.REACT_APP_SERVER || "http://localhost:8080"}/stats`);
+        STATS = axiosRes.data;
+    }
+
+    return STATS;
+
+}
+
 export function Home() {
     const [searchText, setSearchText] = useState("");
     const [searchResults, setSearchResults] = useState("");
+    const [statResults, setStatResults] = useState("");
+
+    getStats().then(res => {
+        setStatResults(res)
+    });
 
     let searchResultElements = [];
 
@@ -66,14 +84,20 @@ export function Home() {
         </a>
     );
 
+    const courseCountStr =  statResults?.courseCount ? (statResults.courseCount.toLocaleString() + " ") : "";
+
     return (
        <Page>
            <Header/>
            <Container className="container nav-offset" >
-               <Hero />
+               <Hero stats={STATS} />
                <Tagline>
                    <TaglineSpan >Find group chats. Connect with classmates. Ace your courses.</TaglineSpan>
-                   <Input type="text" className="form-control form-control-lg rounded-0" placeholder="Search courses by code or name" value={searchText} onChange={async (e) => {
+                   <Input type="text"
+                          className="form-control form-control-lg rounded-0"
+                          placeholder={`Search ${courseCountStr}courses by code or name`}
+                          value={searchText}
+                          onChange={async (e) => {
 
                        setSearchText(e.target.value);
 
