@@ -395,11 +395,10 @@ app.post("/courses/:code/sections/:section/link", newLinkLimiter, async (req, re
     }
 });
 
-app.post("/courses/:code/sections/:section/link/:url/click", newLinkLimiter, async (req, res) => {
-    const urlToUpdate = req.params.url?.trim();
+app.post("/courses/:code/sections/:section/link/click", newLinkLimiter, async (req, res) => {
+    const urlToUpdate = req.body.url;
     const code = req.params.code.trim().toUpperCase();
     const section = req.params.section;
-
     try {
 
         if (!(urlToUpdate && code && section)) {

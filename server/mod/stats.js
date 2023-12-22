@@ -64,7 +64,7 @@ async function getLinkClicks() {
         }
     ]).exec();
 
-    const dbResult = dbResponse?.[0].totalClicks;
+    const dbResult = dbResponse?.[0]?.totalClicks;
     CACHE.set(TOTAL_LINK_STAT_KEY, dbResult);
     return dbResult;
 }

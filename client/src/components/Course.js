@@ -69,7 +69,8 @@ function onLinkClicked(course, section, link) {
 
     axios.post(
         (process.env.REACT_APP_SERVER || "http://localhost:8080") +
-        `/courses/${course}/sections/${section}/link/${encodeURIComponent(link.url)}/click`
+        `/courses/${course}/sections/${section}/link/click`,
+        {url: link.url}
     )
         .then(() => null)
         .catch(() => null);
@@ -197,7 +198,7 @@ function Course() {
                                 <div className="card" >
                                     <div className="card-body">
                                         <h5 className="card-title">{link.type}</h5>
-                                        <p className="card-text bg-light text-break"><small><samp>
+                                        <p className="card-text bg-light text-break" style={{width: "fit-content"}}><small><samp>
                                             <a
                                                 target="_blank"
                                                 href={link.url}
