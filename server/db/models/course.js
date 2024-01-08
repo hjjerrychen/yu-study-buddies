@@ -8,6 +8,13 @@ let link = new mongoose.Schema({
         maxlength: 50,
         trim: true
     },
+    username: {
+        type: String,
+        required: true,
+        minlength: 1,
+        maxlength: 50,
+        trim: true,
+    },
     url: {
         type: String,
         required: true,
@@ -17,6 +24,10 @@ let link = new mongoose.Schema({
             message: props => "The URL is not valid!"
         }
     },
+    clicks: {
+        type: "Number",
+        required: false
+    }
 }, { timestamps: true })
 
 let section = new mongoose.Schema({

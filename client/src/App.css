@@ -12,15 +12,6 @@
   text-decoration: underline;
 }
 
-.jumbotron {
-  background-color: #E31837!important;
-  color: white;
-  padding: 2rem 1rem;
-}
-
-.top-spacing{
-  padding-top: 13em;
-} 
 
 .min-content {
   height: min-content;
@@ -30,10 +21,6 @@
   border-radius: 0;
 }
 
-
-footer{
-  background-color: #E31837!important;
-}
 
 .nav-offset{
   margin-top: 57px;
@@ -45,8 +32,9 @@ footer{
   grid-template-rows: auto 1fr auto;
 }
 
-#root{
-  height: 100vh;
+#root {
+  height: 100vh; /* Fallback */
+  height: 100svh;
 }
 
 select.form-control.is-valid{
